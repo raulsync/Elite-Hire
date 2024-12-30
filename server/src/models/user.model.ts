@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      validate: (value) => {
+      validate: (value: string) => {
         if (!validator.isEmail(value)) {
           throw new Error("Your email is not valid");
         }
@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minLength: 8,
-      maxLength: 20,
-      validate: (value) => {
+      // maxLength: 50,
+      validate: (value: string) => {
         if (!validator.isStrongPassword(value)) {
           throw new Error("Your password is not valid");
         }
@@ -53,8 +53,8 @@ const userSchema = new mongoose.Schema(
       ],
       resumeUrl: {
         type: String,
-        required: true,
-        validate: (value) => {
+        // required: true,
+        validate: (value: string) => {
           if (!validator.isURL(value)) {
             throw new Error("Invalid Url");
           }
@@ -62,14 +62,14 @@ const userSchema = new mongoose.Schema(
       },
       resumeName: {
         type: String,
-        required: true,
+        // required: true,
       },
       company: {
         type: mongoose.Schema.Types.ObjectId, //it is basically used to create relation between two tables
         ref: "Company",
       },
       profilePhoto: {
-        types: String,
+        type: String,
         default: "",
       },
     },

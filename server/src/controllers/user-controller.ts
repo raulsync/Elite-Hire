@@ -16,10 +16,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     //user exists or not
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ $or: [{ email }, { phoneNumber }] });
 
     if (user) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "User already exist with same email or phonenumber",
         success: false,
       });
@@ -27,24 +27,24 @@ export const registerUser = async (req: Request, res: Response) => {
 
     //password hash
 
-    const hashPassword = bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await new User({
+    const newUser = new User({
       name,
       email,
       password: hashPassword,
       phoneNumber,
       role,
     });
-    newUser.save();
-    res.json({
+    await newUser.save();
+    return res.json({
       data: newUser,
       message: "User saved successfully",
       success: true,
     });
   } catch (error) {
     if (error instanceof Error) {
-      return res.status(400).json({
+      return res.status(500).json({
         message: error.message,
         success: false,
       });
@@ -66,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
 
     //find user
 
-    let user = await User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).send({
         message: "user not found",
@@ -84,15 +84,6 @@ export const login = async (req: Request, res: Response) => {
         success: false,
       });
     }
-
-    user = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      profile: user.profile,
-      role: user.role,
-    };
 
     //generate token
     const jwtConfig = {
