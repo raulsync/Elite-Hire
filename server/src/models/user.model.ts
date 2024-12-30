@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import validator from "validator";
 
 const userSchema = new mongoose.Schema(
   {
@@ -12,12 +13,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      validate: (value) => {
+        if (!validator.isEmail(value)) {
+          throw new Error("Your email is not valid");
+        }
+      },
     },
     password: {
       type: String,
       required: true,
       minLength: 8,
       maxLength: 20,
+      validate: (value) => {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Your password is not valid");
+        }
+      },
     },
     phoneNumber: {
       type: String,
@@ -43,6 +54,11 @@ const userSchema = new mongoose.Schema(
       resumeUrl: {
         type: String,
         required: true,
+        validate: (value) => {
+          if (!validator.isURL(value)) {
+            throw new Error("Invalid Url");
+          }
+        },
       },
       resumeName: {
         type: String,
