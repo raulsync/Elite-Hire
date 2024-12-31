@@ -142,12 +142,12 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
     // const file = req.files;
 
-    if (!name || !email || !phoneNumber || !skills) {
-      return res.status(401).json({
-        message: "All fields are required",
-        success: false,
-      });
-    }
+    // if (!name || !email || !phoneNumber || !skills) {
+    //   return res.status(401).json({
+    //     message: "All fields are required",
+    //     success: false,
+    //   });
+    // }
     const user = req.user;
     if (!user) {
       return res.status(401).json({
@@ -158,14 +158,18 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
     //cloudinary file upload
 
-    user.name = name;
-    user.email = email;
-    user.profile = {
-      ...user.profile,
-      skills: skills,
-      // resume
-    };
-    user.phoneNumber = phoneNumber;
+    if (name) {
+      user.name = name;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (phoneNumber) {
+      user.phoneNumber = phoneNumber;
+    }
+    if (skills) {
+      user.profile!.skills = skills;
+    }
 
     await user.save();
     return res.status(200).json({

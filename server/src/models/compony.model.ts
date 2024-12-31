@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
+import validator from "validator";
+import { ICompany } from "../types";
 
-const companySchema = new mongoose.Schema(
+export interface CompanyDocument extends Omit<Document, "location">, ICompany {}
+
+const companySchema = new mongoose.Schema<CompanyDocument>(
   {
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -16,6 +21,11 @@ const companySchema = new mongoose.Schema(
     },
     website: {
       type: String,
+      validate: (value: string) => {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid url");
+        }
+      },
     },
     logo: {
       type: String,
@@ -31,4 +41,7 @@ const companySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const Company = mongoose.model("Company", companySchema);
+export const Company = mongoose.model<CompanyDocument>(
+  "Company",
+  companySchema
+);

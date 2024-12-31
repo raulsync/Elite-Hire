@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/dataBase";
-import authRouter from "./router/auth";
+import authRouter from "./router/auth.router";
 const app = express();
 
 app.use(cookieParser());

@@ -1,5 +1,5 @@
 import { NextFunction, Request } from "express";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface IUser extends Document {
   _id: string;
@@ -15,6 +15,16 @@ export interface IUser extends Document {
     company?: string;
     profilePhoto?: string;
   };
+}
+
+export interface ICompany {
+  _id: string;
+  name: string;
+  description: string;
+  location: string;
+  website: string;
+  logo: string;
+  userId: Types.ObjectId[];
 }
 
 export interface AuthRequest extends Request {
