@@ -17,7 +17,7 @@ authRouter.post(
 
 authRouter.post("/login", login as RequestHandler<{}, {}, LoginBody>);
 authRouter.post("/logout", logout as RequestHandler);
-authRouter.patch(
+authRouter.post(
   "/profile/update",
   userAuth,
   updateProfile as RequestHandler<{}, {}, {}, {}, AuthRequest>

@@ -15,7 +15,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use("/auth", authRouter);
+app.use("/api/user", authRouter);
 const PORT = process.env.PORT || 7777;
 
 connectDB().then(() => {

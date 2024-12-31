@@ -139,6 +139,9 @@ export const logout = async (req: Request, res: Response) => {
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     const { name, email, phoneNumber, skills } = req.body;
+
+    // const file = req.files;
+
     if (!name || !email || !phoneNumber || !skills) {
       return res.status(401).json({
         message: "All fields are required",
@@ -153,13 +156,14 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const skillsArray = skills.split(",");
+    //cloudinary file upload
 
     user.name = name;
     user.email = email;
     user.profile = {
       ...user.profile,
-      skills: skillsArray,
+      skills: skills,
+      // resume
     };
     user.phoneNumber = phoneNumber;
 
