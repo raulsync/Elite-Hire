@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import { IUser } from "../types";
 
-const userSchema = new mongoose.Schema(
+interface UserDocument extends IUser, Document {}
+const userSchema = new mongoose.Schema<UserDocument>(
   {
     name: {
       type: String,
@@ -55,7 +57,7 @@ const userSchema = new mongoose.Schema(
         type: String,
         // required: true,
         validate: (value: string) => {
-          if (!validator.isURL(value)) {
+          if (!!value || validator.isURL(value)) {
             throw new Error("Invalid Url");
           }
         },
@@ -77,4 +79,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model<UserDocument>("User", userSchema);

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
+import { AuthRequest } from "../types";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -127,6 +128,50 @@ export const logout = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error in logout api", error.message);
+      return res.status(501).json({
+        message: error.message,
+        success: false,
+      });
+    }
+  }
+};
+
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const { name, email, phoneNumber, skills } = req.body;
+    if (!name || !email || !phoneNumber || !skills) {
+      return res.status(401).json({
+        message: "All fields are required",
+        success: false,
+      });
+    }
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    const skillsArray = skills.split(",");
+
+    user.name = name;
+    user.email = email;
+    user.profile = {
+      ...user.profile,
+      skills: skillsArray,
+    };
+    user.phoneNumber = phoneNumber;
+
+    await user.save();
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error in update profile api", error.message);
       return res.status(501).json({
         message: error.message,
         success: false,
