@@ -24,7 +24,7 @@ export interface ICompany {
   location: string;
   website: string;
   logo: string;
-  userId: Types.ObjectId[];
+  userId: Types.ObjectId;
 }
 
 export interface AuthRequest extends Request {
