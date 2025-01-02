@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import { IApplication } from "../types";
 
-const applicationSchema = new mongoose.Schema(
+interface ApplicationDocument extends IApplication {}
+const applicationSchema = new mongoose.Schema<ApplicationDocument>(
   {
     job: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,4 +23,7 @@ const applicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const Application = mongoose.model("Application", applicationSchema);
+export const Application = mongoose.model<ApplicationDocument>(
+  "Application",
+  applicationSchema
+);

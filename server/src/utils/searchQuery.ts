@@ -1,7 +1,7 @@
 import { AuthRequest } from "../types";
 
 export const buildSearchQuery = (req: AuthRequest) => {
-  const keyword = req.params.query.trim || "";
+  const keyword = (req?.query?.keyword || "").toString().trim();
 
   if (!keyword) {
     return {};

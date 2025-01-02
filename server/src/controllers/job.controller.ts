@@ -42,7 +42,7 @@ export const jobPost = async (req: AuthRequest, res: Response) => {
       requirements: requirements.split(","),
       location,
       experience: Number(experience),
-      salary: Number(salary),
+      salary,
       jobType,
       position,
       company: companyId,
@@ -74,7 +74,13 @@ export const getAllJob = async (req: AuthRequest, res: Response) => {
       ...searchQuery,
     };
 
-    const job = await Job.find(filters);
+    const job = await Job.find(filters)
+      .populate({
+        path: "company",
+      })
+      .sort({
+        created_At: -1,
+      });
 
     // .sort({
     //   createdAt: -1,
@@ -109,6 +115,7 @@ export const getJobById = async (req: AuthRequest, res: Response) => {
     return res.status(201).send({
       message: "Company fetched successfully",
       job,
+      success: true,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -123,9 +130,10 @@ export const getJobById = async (req: AuthRequest, res: Response) => {
 
 export const getAdminJob = async (req: AuthRequest, res: Response) => {
   try {
-    const adminId = req.user?._id;
+    const user = req.user;
+    const adminId = user?._id;
 
-    const adminJob = await Job.findById({ created_by: adminId });
+    const adminJob = await Job.find({ created_by: adminId });
 
     if (!adminJob) {
       return res.status(400).send({
@@ -137,7 +145,7 @@ export const getAdminJob = async (req: AuthRequest, res: Response) => {
     return res.status(201).send({
       message: "Admin job fetched successfully",
       data: adminJob,
-      success: false,
+      success: true,
     });
   } catch (error) {
     if (error instanceof Error) {

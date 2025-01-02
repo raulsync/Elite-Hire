@@ -33,13 +33,19 @@ export interface IJob {
   description: string;
   requirements: string;
   experience: number;
-  salary: number;
+  salary: string;
   location: string;
   jobType: string;
   position: string;
   company: Types.ObjectId;
   created_by: Types.ObjectId;
   application: Types.ObjectId;
+}
+
+export interface IApplication {
+  job: Types.ObjectId;
+  applicant: Types.ObjectId;
+  status: string;
 }
 
 export interface AuthRequest extends Request {

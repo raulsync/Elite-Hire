@@ -4,7 +4,7 @@ import {
   logout,
   registerUser,
   updateProfile,
-} from "../controllers/user.ycontroller";
+} from "../controllers/user.controller";
 import { userAuth } from "../middlewares/auth.middleware";
 import { AuthRequest, LoginBody, RegisterBody } from "../types";
 
