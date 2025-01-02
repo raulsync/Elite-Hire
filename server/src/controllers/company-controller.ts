@@ -87,6 +87,10 @@ export const getCompanyById = async (req: AuthRequest, res: Response) => {
         success: false,
       });
     }
+    return res.json({
+      message: "Company fetched successfully",
+      company,
+    });
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error in getCompanyById");

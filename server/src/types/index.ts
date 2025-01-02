@@ -27,6 +27,21 @@ export interface ICompany {
   userId: Types.ObjectId;
 }
 
+export interface IJob {
+  _id: string;
+  title: string;
+  description: string;
+  requirements: string;
+  experience: number;
+  salary: number;
+  location: string;
+  jobType: string;
+  position: string;
+  company: Types.ObjectId;
+  created_by: Types.ObjectId;
+  application: Types.ObjectId;
+}
+
 export interface AuthRequest extends Request {
   user?: IUser;
 }

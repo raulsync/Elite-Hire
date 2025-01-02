@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { userAuth } from "../middlewares/auth";
+import { userAuth } from "../middlewares/auth.middleware";
 import {
   getCompany,
   getCompanyById,

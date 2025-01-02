@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import { IJob } from "../types";
 
-const jobSchema = new mongoose.Schema({
+export interface JobDocument extends Omit<Document, "location">, IJob {}
+
+const jobSchema = new mongoose.Schema<JobDocument>({
   title: {
     type: String,
     required: true,
@@ -16,6 +19,9 @@ const jobSchema = new mongoose.Schema({
   location: {
     type: String,
     required: true,
+  },
+  experience: {
+    type: Number,
   },
   salary: {
     type: Number,

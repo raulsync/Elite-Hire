@@ -5,7 +5,7 @@ import {
   registerUser,
   updateProfile,
 } from "../controllers/user-controller";
-import { userAuth } from "../middlewares/auth";
+import { userAuth } from "../middlewares/auth.middleware";
 import { AuthRequest, LoginBody, RegisterBody } from "../types";
 
 const authRouter: Router = express.Router();
