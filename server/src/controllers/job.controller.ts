@@ -50,7 +50,7 @@ export const jobPost = async (req: AuthRequest, res: Response) => {
     });
     return res.status(201).send({
       message: "job created successfully",
-      job,
+      data: job,
       success: true,
     });
   } catch (error) {
@@ -114,6 +114,35 @@ export const getJobById = async (req: AuthRequest, res: Response) => {
     if (error instanceof Error) {
       console.error("Error in get job by id");
       return res.status(500).json({
+        message: error.message,
+        success: false,
+      });
+    }
+  }
+};
+
+export const getAdminJob = async (req: AuthRequest, res: Response) => {
+  try {
+    const adminId = req.user?._id;
+
+    const adminJob = await Job.findById({ created_by: adminId });
+
+    if (!adminJob) {
+      return res.status(400).send({
+        message: "admin job not found",
+        success: false,
+      });
+    }
+
+    return res.status(201).send({
+      message: "Admin job fetched successfully",
+      data: adminJob,
+      success: false,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error in getAdminJOb", error.message);
+      return res.status(500).send({
         message: error.message,
         success: false,
       });

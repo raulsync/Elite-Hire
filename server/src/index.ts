@@ -4,8 +4,9 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/dataBase";
-import authRouter from "./router/auth-router";
-import companyRouter from "./router/company-router";
+import authRouter from "./router/auth.router";
+import companyRouter from "./router/company.router";
+import jobRouter from "./router/job.router";
 const app = express();
 
 app.use(cookieParser());
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/user", authRouter);
 app.use("/api/company", companyRouter);
+app.use("/api/job", jobRouter);
 
 const PORT = process.env.PORT || 7777;
 
