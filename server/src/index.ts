@@ -7,6 +7,7 @@ import { connectDB } from "./config/dataBase";
 import authRouter from "./router/auth.router";
 import companyRouter from "./router/company.router";
 import jobRouter from "./router/job.router";
+import applicationRouter from "./router/application.router";
 const app = express();
 
 app.use(cookieParser());
@@ -23,7 +24,7 @@ app.use(express.json());
 app.use("/api/user", authRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/job", jobRouter);
-
+app.use("/api/applications", applicationRouter);
 const PORT = process.env.PORT || 7777;
 
 connectDB().then(() => {
