@@ -3,7 +3,10 @@ import "./App.css";
 function App() {
   return (
     <>
-      <h1>JOBhub</h1>
+      <header className="text-3xl ">
+        <span className="font-bold text-red-500">JOB</span>
+        <span className="font-semibold">Hub</span>
+      </header>
     </>
   );
 }
