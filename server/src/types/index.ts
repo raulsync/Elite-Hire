@@ -39,7 +39,7 @@ export interface IJob {
   position: string;
   company: Types.ObjectId;
   created_by: Types.ObjectId;
-  application: Types.ObjectId;
+  application: Types.ObjectId[];
 }
 
 export interface IApplication {
