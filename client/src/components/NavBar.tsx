@@ -2,13 +2,13 @@ import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import RippleButton from "./ui/ripple-button";
+import { Link } from "react-router-dom";
 
 function NavBar() {
   const user = false;
   return (
-    <div className="bg-white">
-      <div className="flex items-center justify-between h-16 max-w-17">
+    <div className="bg-white ">
+      <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
         <div>
           <h1 className="text-2xl font-bold">
             job <span className="font-semibold text-red-500">HUB</span>
@@ -23,13 +23,17 @@ function NavBar() {
           <div>
             {!user ? (
               <div className="flex items-center gap-4">
-                <Button variant={"outline"}>Login</Button>
-                <Button
-                  variant={"secondary"}
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  Register
-                </Button>
+                <Link to={"/login"}>
+                  <Button variant={"outline"}>Login</Button>
+                </Link>
+                <Link to={"/signup"}>
+                  <Button
+                    variant={"secondary"}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Register
+                  </Button>
+                </Link>
               </div>
             ) : (
               <Popover>
