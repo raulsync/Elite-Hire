@@ -38,8 +38,14 @@ export const registerUser = async (req: Request, res: Response) => {
       role,
     });
     await newUser.save();
+
+    const data = {
+      name,
+      email,
+      role,
+    };
     return res.json({
-      data: newUser,
+      data: data,
       message: "User saved successfully",
       success: true,
     });
@@ -103,7 +109,6 @@ export const login = async (req: Request, res: Response) => {
       })
       .send({
         message: `Welcome ${user?.name}`,
-        user,
         success: true,
       });
   } catch (error) {

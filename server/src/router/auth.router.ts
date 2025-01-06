@@ -7,11 +7,13 @@ import {
 } from "../controllers/user.controller";
 import { userAuth } from "../middlewares/auth.middleware";
 import { AuthRequest, LoginBody, RegisterBody } from "../types";
+import { singleUpload } from "../middlewares/multer.middleware";
 
 const authRouter: Router = express.Router();
 
 authRouter.post(
   "/register",
+  singleUpload,
   registerUser as RequestHandler<{}, {}, RegisterBody>
 );
 

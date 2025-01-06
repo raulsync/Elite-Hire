@@ -43,7 +43,7 @@ export const applyJob = async (req: AuthRequest, res: Response) => {
       applicant: userId,
     });
 
-    job.applications?.push(application._id);
+    job.applications.push(application._id);
     await application.save();
     await job.save();
     return res.status(200).send({
@@ -112,7 +112,7 @@ export const getApplicants = async (req: AuthRequest, res: Response) => {
     const job = await Job.findById(jobId).populate({
       path: "applications",
       options: { sort: { createdAt: -1 } },
-      populate: { path: "company", options: { sort: { createdAt: -1 } } },
+      populate: { path: "applicant", options: { sort: { createdAt: -1 } } },
     });
 
     if (!job) {
