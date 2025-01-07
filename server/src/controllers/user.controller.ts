@@ -100,6 +100,15 @@ export const login = async (req: Request, res: Response) => {
     const token = await jwt.sign(jwtConfig, process.env.JWT_SECRET_KEY!, {
       expiresIn: "1d",
     });
+
+    const data = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile,
+    };
     return res
       .status(200)
       .cookie("token", token, {
@@ -109,6 +118,7 @@ export const login = async (req: Request, res: Response) => {
       })
       .send({
         message: `Welcome ${user?.name}`,
+        data: data,
         success: true,
       });
   } catch (error) {

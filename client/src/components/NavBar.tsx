@@ -10,7 +10,7 @@ function NavBar() {
     <div className="bg-white ">
       <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-3xl  font-extrabold ">
             job <span className="font-semibold text-red-500">HUB</span>
           </h1>
         </div>
@@ -24,12 +24,17 @@ function NavBar() {
             {!user ? (
               <div className="flex items-center gap-4">
                 <Link to={"/login"}>
-                  <Button variant={"outline"}>Login</Button>
+                  <Button
+                    className="rounded-full border-2  border-red-600"
+                    variant={"outline"}
+                  >
+                    Login
+                  </Button>
                 </Link>
                 <Link to={"/signup"}>
                   <Button
                     variant={"secondary"}
-                    className="bg-red-600 hover:bg-red-700 text-white"
+                    className="rounded-full bg-red-600 hover:bg-red-700 text-white"
                   >
                     Register
                   </Button>
