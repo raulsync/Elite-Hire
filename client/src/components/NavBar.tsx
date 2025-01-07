@@ -16,9 +16,15 @@ function NavBar() {
         </div>
         <div className="flex items-center gap-6">
           <ul className="flex items-center gap-5 font-medium">
-            <li>Home</li>
-            <li>Browse</li>
-            <li>Job</li>
+            <li>
+              <Link to={"/"}>Home</Link>
+            </li>
+            <li>
+              <Link to={"/*"}>Browse</Link>
+            </li>
+            <li>
+              <Link to={"jobs"}>Job</Link>
+            </li>
           </ul>
           <div>
             {!user ? (

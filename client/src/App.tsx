@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import SignUp from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
 import NavBar from "./components/NavBar";
+import Jobs from "./pages/Jobs";
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
         <Route
           path="/login"
           element={<Login />}
+        />
+        <Route
+          path="/jobs"
+          element={<Jobs />}
         />
       </Routes>
     </BrowserRouter>

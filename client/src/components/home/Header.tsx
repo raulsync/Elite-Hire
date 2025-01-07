@@ -1,4 +1,4 @@
-import { Search, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
 function Header() {
   return (
