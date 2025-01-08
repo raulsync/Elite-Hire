@@ -2,15 +2,19 @@ import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const navigate = useNavigate();
   const user = false;
   return (
     <div className="bg-white ">
       <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
         <div>
-          <h1 className="text-3xl  font-extrabold ">
+          <h1
+            onClick={() => navigate("/")}
+            className="text-3xl  font-extrabold cursor-pointer "
+          >
             job <span className="font-semibold text-red-500">HUB</span>
           </h1>
         </div>
@@ -20,7 +24,7 @@ function NavBar() {
               <Link to={"/"}>Home</Link>
             </li>
             <li>
-              <Link to={"/*"}>Browse</Link>
+              <Link to={"/browse"}>Browse</Link>
             </li>
             <li>
               <Link to={"jobs"}>Job</Link>

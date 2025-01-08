@@ -4,6 +4,7 @@ import SignUp from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
 import NavBar from "./components/NavBar";
 import Jobs from "./pages/Jobs";
+import BrowseJobs from "./pages/BrowseJobs";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
         <Route
           path="/jobs"
           element={<Jobs />}
+        />
+        <Route
+          path="/browse"
+          element={<BrowseJobs />}
         />
       </Routes>
     </BrowserRouter>

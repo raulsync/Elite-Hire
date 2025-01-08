@@ -36,7 +36,7 @@ function Job({
           >
             <Avatar>
               <AvatarImage
-                src="https://brandlogovector.com/wp-content/uploads/2021/07/Wipro-New-Logo.png"
+                src="https://yt3.googleusercontent.com/Kbk6fvLQH3X7q6zGb7I-TLDH_2FFA6WZXoKZty5kjlm7nqHxUcQVgv420shK0Z_qN4sp841RVcY=s900-c-k-c0x00ffffff-no-rj"
                 alt="Company Logo"
               />
             </Avatar>
