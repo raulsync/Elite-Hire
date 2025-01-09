@@ -27,8 +27,6 @@ function SignUp() {
     file: "",
   });
 
-  console.log(input);
-
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -87,7 +85,9 @@ function SignUp() {
   return (
     <div className="mx-auto h-[90vh] max-w-7xl flex items-center justify-center">
       <div className="w-1/2 items-center justify-center gap-4  flex my-36 flex-col border border-gray-100 shadow-md rounded-xl">
-        <h1 className="font-semibold text-xl mt-4">Sign Up</h1>
+        <h1 className="font-semibold text-xl mt-4">
+          Sign <span className="text-red-600">Up</span>
+        </h1>
         <form
           onSubmit={handleSubmit}
           className=" w-[90%] my-4 space-y-6"

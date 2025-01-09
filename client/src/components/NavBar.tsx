@@ -3,10 +3,11 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function NavBar() {
   const navigate = useNavigate();
-  const user = false;
+  const user = useSelector((state) => state.auth);
   return (
     <div className="bg-white ">
       <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
@@ -73,7 +74,9 @@ function NavBar() {
                     <div className="flex flex-col">
                       <div className="flex items-center">
                         <User className="h-5 text-muted-foreground" />
-                        <Button variant={"link"}>Profile</Button>
+                        <Button variant={"link"}>
+                          <Link to={"/profile"}>Profile</Link>
+                        </Button>
                       </div>
                       <div className="flex items-center">
                         <LogOut className="h-5 text-muted-foreground" />

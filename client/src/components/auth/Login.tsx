@@ -74,7 +74,9 @@ function Login() {
   return (
     <div className="mx-auto h-[90vh] max-w-7xl flex items-center justify-center">
       <div className="w-1/2 items-center justify-center gap-4  flex my-36 flex-col border border-gray-100 shadow-md rounded-xl">
-        <h1 className="font-semibold text-xl mt-4">Login</h1>
+        <h1 className="font-semibold text-xl mt-4">
+          Log <span className="text-red-600">In</span>
+        </h1>
         <form
           onSubmit={handleSubmit}
           className=" w-[90%] my-4 space-y-6"
@@ -165,7 +167,7 @@ function Login() {
             <p className="text-center  text-sm text-gray-600">
               Didn't have an account
               <Link
-                to="/login"
+                to="/signup"
                 className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline transition ease-in-out duration-150"
               >
                 SignUp

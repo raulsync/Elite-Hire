@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { MagicCard } from "../ui/magic-card";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { useNavigate } from "react-router-dom";
 
 function Job({
   company = "Company Name",
@@ -10,6 +11,8 @@ function Job({
   title = "Job title",
   description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam magni et cumque molestias hic optio ad fuga iste corporis ex.",
 }) {
+  const navigate = useNavigate();
+  const _id = "12";
   return (
     <div className="flex h-auto min-h-[250px] flex-col gap-2">
       <MagicCard
@@ -59,7 +62,7 @@ function Job({
           </div>
           <div className="flex items-center gap-4 mt-4">
             <Button
-              // onClick={() => navigate(`/description/${_id}`)}
+              onClick={() => navigate(`/detail/${_id}`)}
               variant="outline"
               className="font-bold rounded-md"
             >
