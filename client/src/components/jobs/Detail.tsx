@@ -10,25 +10,25 @@ function Detail() {
           <div className=" flex gap-2 items-center mt-4 ">
             <Badge
               className={" text-blue-600 font-bold"}
-              variant={"ghost"}
+              variant="outline"
             >
               10 Position
             </Badge>
             <Badge
               className={" text-[#FA4F09] font-bold"}
-              variant={"ghost"}
+              variant="outline"
             >
               20 LPA
             </Badge>
             <Badge
               className={" text-[#6B3AC2]  font-bold"}
-              variant={"ghost"}
+              variant="outline"
             >
               Remote
             </Badge>
             <Badge
               className={" text-black font-bold"}
-              variant={"ghost"}
+              variant="outline"
             >
               Full Time
             </Badge>

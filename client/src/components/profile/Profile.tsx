@@ -2,8 +2,13 @@ import { Contact, Mail, Pen } from "lucide-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { Dispatch, SetStateAction } from "react";
 
-function Profile() {
+interface IProps {
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
+
+function Profile({ setOpenModal }: IProps) {
   return (
     <div className=" bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow shadow-gray-400 hover:shadow-red-400">
       <div className="flex justify-between">
@@ -20,7 +25,7 @@ function Profile() {
           </div>
         </div>
         <Button
-          // onClick={() => setOpen(true)}
+          onClick={() => setOpenModal(true)}
           className="text-right"
           variant="outline"
         >

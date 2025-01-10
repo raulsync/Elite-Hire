@@ -16,7 +16,7 @@ function NavBar() {
             onClick={() => navigate("/")}
             className="text-3xl  font-extrabold cursor-pointer "
           >
-            job <span className="font-semibold text-red-500">HUB</span>
+            Elite<span className="font-semibold text-red-500">Hire</span>
           </h1>
         </div>
         <div className="flex items-center gap-6">

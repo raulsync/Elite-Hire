@@ -6,8 +6,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center text-sm">
           <p className="text-black-600">
-            &copy; {new Date().getFullYear()} Job{" "}
-            <span className="text-red-600">HUB.</span> All rights reserved.
+            &copy; {new Date().getFullYear()} Elite{" "}
+            <span className="text-red-600">Hire.</span> All rights reserved.
           </p>
           <p>
             {" "}
