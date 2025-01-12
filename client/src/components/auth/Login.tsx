@@ -9,6 +9,7 @@ import { USER_API } from "@/utils/api";
 import { useToast } from "@/hooks/use-toast";
 import { useDispatch } from "react-redux";
 import { addUser } from "@/store/features/authSlice";
+import { AppDispatch } from "@/store/store";
 
 interface IState {
   email: string;
@@ -24,7 +25,7 @@ function Login() {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });

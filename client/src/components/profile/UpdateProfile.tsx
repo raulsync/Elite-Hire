@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,28 +9,40 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { USER_API } from "@/utils/api";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface IProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 }
 interface IState {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  bio: string;
-  skills: string[];
-  file?: File | string;
+  name: string | undefined;
+  email: string | undefined;
+  phoneNumber: string | undefined;
+  bio: string | undefined;
+  skills: string[] | undefined;
+  file?: File | string | undefined;
 }
 
 function UpdateProfile({ openModal, setOpenModal }: IProps) {
+  const { user } = useSelector((state: RootState) => state.auth);
   const [input, setInput] = useState<IState>({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    bio: "",
-    skills: [],
+    name: user?.name,
+    email: user?.email,
+    phoneNumber: user?.phoneNumber,
+    bio: user?.profile?.bio,
+    skills: user?.profile?.skills?.map((skill: string) => skill),
+    file: user?.profile?.resumeUrl,
   });
+  console.log("User from Redux:", user);
+
+  const { toast } = useToast();
+
+  console.log("Input state:", input);
 
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -38,6 +50,39 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, file: e.target.files?.[0] });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Form submitted:", input);
+    try {
+      const response = await axios.put(
+        USER_API + "/profile/update",
+        {
+          name: input.name,
+          email: input.email,
+          phoneNumber: input.phoneNumber,
+          file: input.file,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("API Response:", response.data);
+    } catch (error) {
+      console.error("API Error:", error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong!";
+        toast({
+          description: errorMessage,
+        });
+      } else {
+        toast({
+          description: "Unexpected error occurred!",
+        });
+      }
+    }
   };
 
   return (
@@ -48,7 +93,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
           onInteractOutside={() => setOpenModal(false)}
         >
           <DialogHeader>
-            <DialogTitle className="flex flex-col items-center gap-3 my-3  justify-center">
+            <DialogTitle className="flex flex-col items-center gap-3 my-3 justify-center">
               <h2 className="text-3xl font-semibold">
                 Let's update your <span className="text-red-600">profile</span>
               </h2>
@@ -57,7 +102,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               </p>
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={() => {}}>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
@@ -154,13 +199,6 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               </div>
             </div>
             <DialogFooter>
-              {/* {loading ? (
-                <Button className="w-full my-4">
-                  {" "}
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
-                </Button>
-              ) : (
-              )} */}
               <Button
                 type="submit"
                 className="w-full my-4"

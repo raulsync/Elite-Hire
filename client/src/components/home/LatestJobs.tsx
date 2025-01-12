@@ -4,11 +4,7 @@ const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function LatestJobs() {
   return (
-    <div
-      max-w-7xl
-      mx-auto
-      my-20
-    >
+    <div className="max-w-7xl mx-auto my-20">
       <h2 className="text-4xl text-center">
         <span>
           Latest and trending{" "}

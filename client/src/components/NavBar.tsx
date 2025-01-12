@@ -3,11 +3,50 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import axios from "axios";
+import { USER_API } from "@/utils/api";
+import { useToast } from "@/hooks/use-toast";
+import { addUser } from "@/store/features/authSlice";
 
 function NavBar() {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  const { toast } = useToast();
+  const dispatch = useDispatch();
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.post(USER_API + "/logout", {
+        withcredentials: true,
+      });
+
+      console.log(response);
+      if (response && response.data && response.data.success) {
+        dispatch(addUser(null));
+        navigate("/");
+        toast({
+          description: response.data.message,
+        });
+      } else {
+        console.error("Error logging out:", response.data);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong!";
+        toast({
+          description: errorMessage,
+        });
+      } else {
+        toast({
+          description: "Unexpected error occurred!",
+        });
+      }
+    }
+  };
   return (
     <div className="bg-white ">
       <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
@@ -80,7 +119,12 @@ function NavBar() {
                       </div>
                       <div className="flex items-center">
                         <LogOut className="h-5 text-muted-foreground" />
-                        <Button variant={"link"}>Logout</Button>
+                        <Button
+                          onClick={handleDelete}
+                          variant={"link"}
+                        >
+                          Logout
+                        </Button>
                       </div>
                     </div>
                   </div>
