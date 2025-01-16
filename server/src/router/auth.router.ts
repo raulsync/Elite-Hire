@@ -22,6 +22,7 @@ authRouter.post("/logout", logout as RequestHandler);
 authRouter.post(
   "/profile/update",
   userAuth,
+  singleUpload,
   updateProfile as RequestHandler<{}, {}, {}, {}, AuthRequest>
 );
 

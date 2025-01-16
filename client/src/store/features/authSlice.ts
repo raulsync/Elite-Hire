@@ -8,6 +8,7 @@ interface User {
   profile?: {
     bio?: string;
     skills?: string[];
+    profilePhoto?: string;
     resumeUrl?: string;
     resumeName?: string;
   };

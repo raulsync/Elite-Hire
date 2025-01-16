@@ -26,7 +26,7 @@ interface IState {
   email: string | undefined;
   phoneNumber: string | undefined;
   bio: string | undefined;
-  skills: string[] | undefined;
+  skills: string[] | string | undefined;
   file?: File | string | undefined;
 }
 
@@ -38,7 +38,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     email: user?.email,
     phoneNumber: user?.phoneNumber,
     bio: user?.profile?.bio,
-    skills: user?.profile?.skills?.map((skill) => skill),
+    skills: user?.profile?.skills?.map((skill) => skill) || [],
     file: user?.profile?.resumeUrl,
   });
   console.log("User from Redux:", user);
@@ -66,7 +66,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     formData.append("phoneNumber", input.phoneNumber || "");
     formData.append("bio", input.bio || "");
     if (input.skills) {
-      formData.append("skills", input.skills.join(","));
+      formData.append("skills", input?.skills);
     }
     if (input.file) {
       formData.append("file", input.file);

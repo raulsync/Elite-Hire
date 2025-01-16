@@ -11,7 +11,8 @@ export interface IUser extends Document {
   profile?: {
     bio?: string;
     skills: string[];
-    recruitmentUrl?: string;
+    resumeUrl?: string;
+    resumeName?: string;
     company?: string;
     profilePhoto?: string;
   };
@@ -74,4 +75,10 @@ export interface LoginBody {
   email: string;
   password: string;
   role: string;
+}
+
+export interface CloudinaryResponse {
+  secure_url: string;
+  public_id: string;
+  url: string;
 }

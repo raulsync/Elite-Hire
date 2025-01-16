@@ -56,11 +56,6 @@ const userSchema = new mongoose.Schema<UserDocument>(
       resumeUrl: {
         type: String,
         // required: true,
-        validate: (value: string) => {
-          if (!!value || validator.isURL(value)) {
-            throw new Error("Invalid Url");
-          }
-        },
       },
       resumeName: {
         type: String,

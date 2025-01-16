@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { USER_API } from "@/utils/api";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface IState {
   name: string;
@@ -26,7 +27,7 @@ function SignUp() {
     role: "",
     file: "",
   });
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -40,22 +41,20 @@ function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const formData = new FormData();
+    formData.append("name", input.name || "");
+    formData.append("email", input.email || "");
+    formData.append("password", input.password || "");
+    formData.append("phoneNumber", input.phoneNumber || "");
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+    setIsLoading(true);
     try {
-      const response = await axios.post(
-        USER_API + "/register",
-        {
-          name: input.name,
-          email: input.email,
-          password: input.password,
-          phoneNumber: input.phoneNumber,
-          role: input.role,
-          file: input.file,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(USER_API + "/register", formData, {
+        withCredentials: true,
+      });
       console.log(response.data);
       if (response.data.success) {
         navigate("/login");
@@ -210,12 +209,18 @@ function SignUp() {
           </div>
 
           <div className="space-y-4">
-            <Button
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none"
-            >
-              Sign up
-            </Button>
+            {isLoading ? (
+              <Button className="w-full my-4">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> loading...{" "}
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none"
+              >
+                Sign up
+              </Button>
+            )}
 
             <p className="text-center text-sm text-gray-600">
               Already have an account?

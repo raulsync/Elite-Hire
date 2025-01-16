@@ -2,17 +2,26 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
-import { AuthRequest } from "../types";
+import { AuthRequest, CloudinaryResponse } from "../types";
+import { getDataUri } from "../utils/dataUri";
+import cloudinary from "../config/cloudinary";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phoneNumber, role } = req.body;
 
+    //file
+    const file = req.file;
     if (!name || !email || !password || !phoneNumber || !role) {
       return res.status(404).json({
         message: "All fields are required",
         success: false,
       });
+    }
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
     }
 
     //user exists or not
@@ -36,14 +45,14 @@ export const registerUser = async (req: Request, res: Response) => {
       password: hashPassword,
       phoneNumber,
       role,
+      profile: {
+        profilePhoto: cloudResponse?.secure_url,
+      },
     });
     await newUser.save();
 
-    const data = {
-      name,
-      email,
-      role,
-    };
+    const data = newUser;
+
     return res.json({
       data: data,
       message: "User saved successfully",
@@ -153,16 +162,11 @@ export const logout = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, email, phoneNumber, skills } = req.body;
+    const { name, email, phoneNumber, bio, skills } = req.body;
 
-    // const file = req.files;
+    const file = req.file as Express.Multer.File | undefined;
+    console.log("File=>", file);
 
-    // if (!name || !email || !phoneNumber || !skills) {
-    //   return res.status(401).json({
-    //     message: "All fields are required",
-    //     success: false,
-    //   });
-    // }
     const user = req.user;
     if (!user) {
       return res.status(401).json({
@@ -171,7 +175,20 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    //cloudinary file upload
+    //file upload
+
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
+    }
+
+    let skillsArray: string[] = [];
+    if (typeof skills === "string") {
+      skillsArray = skills.split(",");
+    } else if (Array.isArray(skills)) {
+      skillsArray = skills;
+    }
 
     if (name) {
       user.name = name;
@@ -182,15 +199,26 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     if (phoneNumber) {
       user.phoneNumber = phoneNumber;
     }
-    if (skills) {
-      user.profile!.skills = skills;
+    if (bio) {
+      user.profile!.bio = bio;
+    }
+    if (skillsArray) {
+      user.profile!.skills = skillsArray;
     }
 
-    await user.save();
+    if (cloudResponse?.secure_url) {
+      user.profile!.resumeUrl = cloudResponse.secure_url;
+      user.profile!.resumeName = file?.originalname || "";
+    }
+
+    const newUser = await user.save();
+
+    // console.log(newUser);
+
     return res.status(200).json({
       message: "Profile updated successfully",
       success: true,
-      data: user,
+      data: newUser,
     });
   } catch (error) {
     if (error instanceof Error) {

@@ -94,14 +94,14 @@ function NavBar() {
               <Popover>
                 <PopoverTrigger asChild>
                   <Avatar className="cursor-pointer">
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={user.profile?.profilePhoto} />
                   </Avatar>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-4">
                       <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarImage src={user.profile?.profilePhoto} />
                       </Avatar>
                       <h3 className="font-medium">{user.name}</h3>
                     </div>
