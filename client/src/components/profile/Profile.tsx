@@ -12,7 +12,7 @@ interface IProps {
 
 function Profile({ setOpenModal }: IProps) {
   const { user } = useSelector((state: RootState) => state.auth);
-  const isResume = true;
+  const isResume = user?.profile?.resumeUrl;
   return (
     <div className=" bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow shadow-gray-400 hover:shadow-red-400">
       <div className="flex justify-between">
@@ -37,8 +37,8 @@ function Profile({ setOpenModal }: IProps) {
         <div className="flex items-center gap-3 my-2">
           <Mail />
           <span className="">
-            {user?.email}
-            {/* <a href={`mailto:${user?.email}`}>{user?.email}</a> */}
+            {/* {user?.email} */}
+            <a href={`mailto:${user?.email}`}>{user?.email}</a>
           </span>
         </div>
         <div className="flex items-center gap-3 my-2">
@@ -75,7 +75,7 @@ function Profile({ setOpenModal }: IProps) {
                 className="text-blue-600 hover:underline cursor-pointer"
               >
                 Download
-                {user?.profile?.resumeName}
+                <span className="ml-2">{user?.profile?.resumeName}</span>
               </a>
             ) : (
               <span>No Resume Found</span>

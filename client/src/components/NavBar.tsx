@@ -103,11 +103,11 @@ function NavBar() {
                       <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" />
                       </Avatar>
-                      <h3 className="font-medium">Rahul Anand</h3>
+                      <h3 className="font-medium">{user.name}</h3>
                     </div>
                     <div className="">
                       <p className="text-sm text-muted-foreground">
-                        Lorem ipsum dolor sit amet consectetur
+                        {user.profile?.bio}
                       </p>
                     </div>
                     <div className="flex flex-col">

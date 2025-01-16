@@ -12,8 +12,10 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { USER_API } from "@/utils/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { addUser } from "@/store/features/authSlice";
+import { Loader2 } from "lucide-react";
 
 interface IProps {
   openModal: boolean;
@@ -30,17 +32,19 @@ interface IState {
 
 function UpdateProfile({ openModal, setOpenModal }: IProps) {
   const { user } = useSelector((state: RootState) => state.auth);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<IState>({
     name: user?.name,
     email: user?.email,
     phoneNumber: user?.phoneNumber,
     bio: user?.profile?.bio,
-    skills: user?.profile?.skills?.map((skill: string) => skill),
+    skills: user?.profile?.skills?.map((skill) => skill),
     file: user?.profile?.resumeUrl,
   });
   console.log("User from Redux:", user);
 
   const { toast } = useToast();
+  const dispatch = useDispatch();
 
   console.log("Input state:", input);
 
@@ -50,24 +54,41 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, file: e.target.files?.[0] });
+    console.log("filehandle", input.file);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", input);
+
+    const formData = new FormData();
+    formData.append("name", input.name || "");
+    formData.append("email", input.email || "");
+    formData.append("phoneNumber", input.phoneNumber || "");
+    formData.append("bio", input.bio || "");
+    if (input.skills) {
+      formData.append("skills", input.skills.join(","));
+    }
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+    setIsLoading(true);
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         USER_API + "/profile/update",
-        {
-          name: input.name,
-          email: input.email,
-          phoneNumber: input.phoneNumber,
-          file: input.file,
-        },
+        formData,
         {
           withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
+
+      if (response.data) {
+        dispatch(addUser({ ...response.data.data, skills: input.skills }));
+        setOpenModal(false);
+        toast({
+          description: response.data.message,
+        });
+      }
       console.log("API Response:", response.data);
     } catch (error) {
       console.error("API Error:", error);
@@ -82,9 +103,10 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
           description: "Unexpected error occurred!",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
-
   return (
     <div className="max-w-6xl mx-auto my-10">
       <Dialog open={openModal}>
@@ -138,14 +160,14 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
-                  htmlFor="number"
+                  htmlFor="phoneNumber"
                   className="text-right"
                 >
                   Phone Number
                 </Label>
                 <Input
-                  id="number"
-                  name="number"
+                  id="phoneNumber"
+                  name="phoneNnumber"
                   value={input.phoneNumber}
                   onChange={handleEventChange}
                   className="col-span-3"
@@ -199,12 +221,18 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               </div>
             </div>
             <DialogFooter>
-              <Button
-                type="submit"
-                className="w-full my-4"
-              >
-                Update
-              </Button>
+              {isLoading ? (
+                <Button className="w-full my-4">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> loading...{" "}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="w-full my-4"
+                >
+                  Update
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>
