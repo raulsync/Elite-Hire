@@ -66,7 +66,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     formData.append("phoneNumber", input.phoneNumber || "");
     formData.append("bio", input.bio || "");
     if (input.skills) {
-      formData.append("skills", input?.skills);
+      formData.append("skills", input.skills);
     }
     if (input.file) {
       formData.append("file", input.file);

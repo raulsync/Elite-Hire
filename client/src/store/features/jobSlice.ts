@@ -1,17 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Job {
+export interface Job {
   _id: string;
   title: string;
   description: string;
-  createdAt: string;
-  position: string;
-  jobType: string;
+  requirements: string[];
+  location: string;
+  experience?: number;
   salary: string;
+  jobType: string;
+  position: string;
   company: {
+    _id: string;
     name: string;
     logo: string;
   };
+  created_by: string;
+  applications: { applicant: string }[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface JobState {

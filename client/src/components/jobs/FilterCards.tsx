@@ -41,11 +41,11 @@ const FilterCards = () => {
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
       <RadioGroup>
-        {filterData.map((data, index) => (
+        {filterData.map((data) => (
           <div>
             <h2 className="font-bold text-lg">{data.filterType}</h2>
 
-            {data.array.map((item, index) => (
+            {data.array.map((item) => (
               <div className="flex items-center  space-x-2 my-2">
                 <RadioGroupItem value={item}></RadioGroupItem>
                 <label>{item}</label>

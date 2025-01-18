@@ -60,15 +60,28 @@ function NavBar() {
         </div>
         <div className="flex items-center gap-6">
           <ul className="flex items-center gap-5 font-medium">
-            <li>
-              <Link to={"/"}>Home</Link>
-            </li>
-            <li>
-              <Link to={"/browse"}>Browse</Link>
-            </li>
-            <li>
-              <Link to={"jobs"}>Job</Link>
-            </li>
+            {user && user?.role === "Recruiter" ? (
+              <>
+                <li>
+                  <Link to="/admin/companies">Companies</Link>
+                </li>
+                <li>
+                  <Link to="/admin/jobs">Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to={"/"}>Home</Link>
+                </li>
+                <li>
+                  <Link to={"/browse"}>Browse</Link>
+                </li>
+                <li>
+                  <Link to={"jobs"}>Job</Link>
+                </li>
+              </>
+            )}
           </ul>
           <div>
             {!user ? (
@@ -94,14 +107,26 @@ function NavBar() {
               <Popover>
                 <PopoverTrigger asChild>
                   <Avatar className="cursor-pointer">
-                    <AvatarImage src={user.profile?.profilePhoto} />
+                    <AvatarImage
+                      src={
+                        user.profile?.profilePhoto
+                          ? user.profile.profilePhoto
+                          : "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                      }
+                    />
                   </Avatar>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-4">
                       <Avatar>
-                        <AvatarImage src={user.profile?.profilePhoto} />
+                        <AvatarImage
+                          src={
+                            user.profile?.profilePhoto
+                              ? user.profile.profilePhoto
+                              : "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                          }
+                        />
                       </Avatar>
                       <h3 className="font-medium">{user.name}</h3>
                     </div>
@@ -112,10 +137,14 @@ function NavBar() {
                     </div>
                     <div className="flex flex-col">
                       <div className="flex items-center">
-                        <User className="h-5 text-muted-foreground" />
-                        <Button variant={"link"}>
-                          <Link to={"/profile"}>Profile</Link>
-                        </Button>
+                        {user && user?.role === "Recruiter" ? null : (
+                          <>
+                            <User className="h-5 text-muted-foreground" />
+                            <Button variant={"link"}>
+                              <Link to={"/profile"}>Profile</Link>
+                            </Button>
+                          </>
+                        )}
                       </div>
                       <div className="flex items-center">
                         <LogOut className="h-5 text-muted-foreground" />

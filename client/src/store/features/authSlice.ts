@@ -12,6 +12,7 @@ interface User {
     resumeUrl?: string;
     resumeName?: string;
   };
+  role: "Student" | "Recruiter";
 }
 
 interface AuthState {
