@@ -13,11 +13,9 @@ const companySchema = new mongoose.Schema<CompanyDocument>(
     },
     description: {
       type: String,
-      required: true,
     },
     location: {
       type: String,
-      required: true,
     },
     website: {
       type: String,

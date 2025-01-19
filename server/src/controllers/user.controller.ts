@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
-import { AuthRequest, CloudinaryResponse } from "../types";
+import { AuthRequest } from "../types";
 import { getDataUri } from "../utils/dataUri";
 import cloudinary from "../config/cloudinary";
 

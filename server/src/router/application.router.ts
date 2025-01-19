@@ -9,7 +9,7 @@ import { userAuth } from "../middlewares/auth.middleware";
 
 const applicationRouter = express.Router();
 
-applicationRouter.post("/apply/:id", userAuth, applyJob as RequestHandler);
+applicationRouter.get("/apply/:id", userAuth, applyJob as RequestHandler);
 
 applicationRouter.get("/get", userAuth, getAppliedJobs as RequestHandler);
 

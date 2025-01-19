@@ -84,7 +84,7 @@ export const getAppliedJobs = async (req: AuthRequest, res: Response) => {
       });
     }
     return res.status(200).send({
-      data: application,
+      application,
       success: true,
     });
   } catch (error) {
