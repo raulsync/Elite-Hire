@@ -2,7 +2,7 @@ import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import axios from "axios";
@@ -12,10 +12,33 @@ import { addUser } from "@/store/features/authSlice";
 
 function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useSelector((state: RootState) => state.auth);
-
   const { toast } = useToast();
   const dispatch = useDispatch();
+
+  const isActiveRoute = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const NavLink = ({
+    to,
+    children,
+  }: {
+    to: string;
+    children: React.ReactNode;
+  }) => (
+    <Link
+      to={to}
+      className={`relative py-2 transition-colors ${
+        isActiveRoute(to)
+          ? "text-red-500 font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-red-500"
+          : "hover:text-red-500"
+      }`}
+    >
+      {children}
+    </Link>
+  );
 
   const handleDelete = async () => {
     try {
@@ -23,7 +46,6 @@ function NavBar() {
         withcredentials: true,
       });
 
-      console.log(response);
       if (response && response.data && response.data.success) {
         dispatch(addUser(null));
         navigate("/");
@@ -47,57 +69,68 @@ function NavBar() {
       }
     }
   };
+
   return (
-    <div className="bg-white ">
-      <div className="flex items-center justify-between mx-auto h-16 max-w-7xl">
-        <div>
+    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
+      <div className="flex items-center justify-between mx-auto h-16 max-w-7xl px-4 lg:px-8">
+        <div className="flex-shrink-0">
           <h1
             onClick={() => navigate("/")}
-            className="text-3xl  font-extrabold cursor-pointer "
+            className="text-3xl font-extrabold cursor-pointer hover:opacity-90 transition-opacity"
           >
             Elite<span className="font-semibold text-red-500">Hire</span>
           </h1>
         </div>
-        <div className="flex items-center gap-6">
-          <ul className="flex items-center gap-5 font-medium">
+
+        <div className="flex items-center gap-8">
+          <ul className="hidden md:flex items-center gap-8 font-medium">
             {user && user?.role === "Recruiter" ? (
               <>
                 <li>
-                  <Link to="/admin/companies">Companies</Link>
+                  <NavLink to="/admin/companies">Companies</NavLink>
                 </li>
                 <li>
-                  <Link to="/admin/jobs">Jobs</Link>
+                  <NavLink to="/admin/jobs">Jobs</NavLink>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link to={"/"}>Home</Link>
+                  <NavLink to="/">Home</NavLink>
                 </li>
                 <li>
-                  <Link to={"/browse"}>Browse</Link>
+                  <NavLink to="/browse">Browse</NavLink>
                 </li>
                 <li>
-                  <Link to={"jobs"}>Job</Link>
+                  <NavLink to="/jobs">Job</NavLink>
                 </li>
               </>
             )}
           </ul>
-          <div>
+
+          <div className="flex items-center gap-4">
             {!user ? (
               <div className="flex items-center gap-4">
-                <Link to={"/login"}>
+                <Link to="/login">
                   <Button
-                    className="rounded-full border-2  border-red-600"
-                    variant={"outline"}
+                    className={`rounded-full border-2 border-red-500 transition-colors ${
+                      isActiveRoute("/login")
+                        ? "bg-red-50 text-red-500"
+                        : "hover:bg-red-50"
+                    }`}
+                    variant="outline"
                   >
                     Login
                   </Button>
                 </Link>
-                <Link to={"/signup"}>
+                <Link to="/signup">
                   <Button
-                    variant={"secondary"}
-                    className="rounded-full bg-red-600 hover:bg-red-700 text-white"
+                    className={`rounded-full transition-colors ${
+                      isActiveRoute("/signup")
+                        ? "bg-red-600"
+                        : "bg-red-500 hover:bg-red-600"
+                    } text-white`}
+                    variant="secondary"
                   >
                     Register
                   </Button>
@@ -106,55 +139,64 @@ function NavBar() {
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Avatar className="cursor-pointer">
+                  <Avatar className="cursor-pointer hover:opacity-90 transition-opacity ring-2 ring-offset-2 ring-red-500">
                     <AvatarImage
                       src={
-                        user.profile?.profilePhoto
-                          ? user.profile.profilePhoto
-                          : "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                        user.profile?.profilePhoto ||
+                        "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
                       }
                     />
                   </Avatar>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="flex flex-col gap-2">
+                <PopoverContent className="w-80 p-4">
+                  <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-4">
-                      <Avatar>
+                      <Avatar className="h-12 w-12">
                         <AvatarImage
                           src={
-                            user.profile?.profilePhoto
-                              ? user.profile.profilePhoto
-                              : "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                            user.profile?.profilePhoto ||
+                            "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
                           }
                         />
                       </Avatar>
-                      <h3 className="font-medium">{user.name}</h3>
+                      <div>
+                        <h3 className="font-medium text-lg">{user.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
                     </div>
-                    <div className="">
-                      <p className="text-sm text-muted-foreground">
-                        {user.profile?.bio}
+
+                    {user.profile?.bio && (
+                      <p className="text-sm text-muted-foreground border-t pt-2">
+                        {user.profile.bio}
                       </p>
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="flex items-center">
-                        {user && user?.role === "Recruiter" ? null : (
-                          <>
-                            <User className="h-5 text-muted-foreground" />
-                            <Button variant={"link"}>
-                              <Link to={"/profile"}>Profile</Link>
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                      <div className="flex items-center">
-                        <LogOut className="h-5 text-muted-foreground" />
-                        <Button
-                          onClick={handleDelete}
-                          variant={"link"}
-                        >
-                          Logout
-                        </Button>
-                      </div>
+                    )}
+
+                    <div className="flex flex-col gap-1 border-t pt-2">
+                      {user?.role !== "Recruiter" && (
+                        <Link to="/profile">
+                          <Button
+                            variant="ghost"
+                            className={`w-full justify-start gap-2 ${
+                              isActiveRoute("/profile")
+                                ? "text-red-500 bg-red-50"
+                                : "hover:text-red-500"
+                            }`}
+                          >
+                            <User className="h-4 w-4" />
+                            Profile
+                          </Button>
+                        </Link>
+                      )}
+                      <Button
+                        onClick={handleDelete}
+                        variant="ghost"
+                        className="w-full justify-start gap-2 hover:text-red-500"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                      </Button>
                     </div>
                   </div>
                 </PopoverContent>
@@ -163,7 +205,7 @@ function NavBar() {
           </div>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
 

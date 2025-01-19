@@ -7,6 +7,9 @@ import Jobs from "./pages/Jobs";
 import BrowseJobs from "./pages/BrowseJobs";
 import ProfilePage from "./pages/ProfilePage";
 import JobDetails from "./pages/JobDetails";
+import Company from "./pages/admin/Company";
+import CreateCompany from "./pages/admin/CreateCompany";
+import EditCompany from "./pages/admin/EditCompany";
 
 function App() {
   return (
@@ -40,6 +43,18 @@ function App() {
         <Route
           path="/browse"
           element={<BrowseJobs />}
+        />
+        <Route
+          path="/admin/companies"
+          element={<Company />}
+        />
+        <Route
+          path="/admin/companies/create"
+          element={<CreateCompany />}
+        />
+        <Route
+          path="/admin/companies/:id"
+          element={<EditCompany />}
         />
       </Routes>
     </BrowserRouter>

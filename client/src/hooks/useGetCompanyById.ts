@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { addCompany } from "@/store/features/companySlice";
 import { useEffect } from "react";
 
-export const useGetCompanyById = (companyId: string) => {
+export const useGetCompanyById = (companyId: string | undefined) => {
   const { toast } = useToast();
   const dispatch = useDispatch();
 

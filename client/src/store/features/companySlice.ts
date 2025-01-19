@@ -6,7 +6,7 @@ interface Company {
   description: string;
   location: string;
   website: string;
-  logo?: string;
+  file?: string | File;
   userId: string;
   createdAt: string;
   updatedAt: string;

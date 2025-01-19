@@ -2,37 +2,35 @@ import { Request, Response } from "express";
 import { Company } from "../models/compony.model";
 import { AuthRequest } from "../types";
 import mongoose from "mongoose";
+import { getDataUri } from "../utils/dataUri";
+import cloudinary from "../config/cloudinary";
 
 export const registerCompany = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, description, website, location } = req.body;
-
-    if (!name || !description || !website || !location) {
-      return res.status(400).send({
-        message: "All fields are required",
-        success: false,
-      });
-    }
-    const existingCompany = await Company.findOne({ name });
-
-    if (existingCompany) {
+    const user = req.user;
+    const userId = user!._id;
+    const { companyName } = req.body;
+    if (!companyName) {
       return res.status(400).json({
-        message: "Company Already Exist",
+        message: "Company name is required.",
         success: false,
       });
     }
-
-    const newCompany = await Company.create({
-      name,
-      description,
-      location,
-      website,
-      userId: req.user?._id,
+    let company = await Company.findOne({ name: companyName });
+    if (company) {
+      return res.status(400).json({
+        message: "You can't register same company.",
+        success: false,
+      });
+    }
+    company = await Company.create({
+      name: companyName,
+      userId: userId,
     });
 
     return res.status(201).json({
-      message: "Comapny registered successfully",
-      newCompany,
+      message: "Company registered successfully.",
+      company,
       success: true,
     });
   } catch (error) {
@@ -90,6 +88,7 @@ export const getCompanyById = async (req: AuthRequest, res: Response) => {
     return res.json({
       message: "Company fetched successfully",
       company,
+      success: true,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -108,8 +107,7 @@ export const updateCompany = async (req: AuthRequest, res: Response) => {
   try {
     const { name, description, location, website } = req.body;
 
-    // const file = req.files
-    const updatedCompany = { name, description, location, website };
+    const file = req.file;
 
     //validate id
 
@@ -117,7 +115,15 @@ export const updateCompany = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: "Invalid company ID format" });
     }
 
-    const company = await Company.findOneAndUpdate(
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
+    }
+    const logo = cloudResponse?.secure_url;
+    const updatedCompany = { name, description, location, website, logo };
+
+    const company = await Company.findByIdAndUpdate(
       { _id: req.params.id },
       updatedCompany,
       { new: true }
