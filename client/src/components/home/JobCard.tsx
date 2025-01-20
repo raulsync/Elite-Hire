@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { MagicCard } from "../ui/magic-card";
 
@@ -18,8 +19,12 @@ interface JobProps {
   };
 }
 function JobCard({ job }: JobProps) {
+  const navigate = useNavigate();
   return (
-    <div className="flex h-auto min-h-[250px] flex-col gap-2">
+    <div
+      onClick={() => navigate(`detail/${job._id}`)}
+      className="flex h-auto min-h-[250px] flex-col gap-2"
+    >
       <MagicCard
         className="cursor-pointer flex-col my-2 px-6 py-4 shadow-2xl h-full"
         gradientColor="#D9D9D955"

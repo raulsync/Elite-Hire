@@ -16,16 +16,12 @@ function LatestJobs() {
         {jobs.length === 0 ? (
           <span>No Job Available</span>
         ) : (
-          jobs.slice(0, 6).map((job) =>
-            job._id ? (
-              <JobCard
-                key={job._id}
-                job={job}
-              />
-            ) : (
-              <span key={job._id}>Invalid Job Data</span>
-            )
-          )
+          jobs.slice(0, 6).map((job) => (
+            <JobCard
+              key={job._id}
+              job={job}
+            />
+          ))
         )}
       </div>
     </div>

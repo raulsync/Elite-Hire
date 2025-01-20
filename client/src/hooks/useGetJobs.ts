@@ -15,9 +15,12 @@ export const useGetJobs = () => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${JOB_API}/get?query=${searchQuery}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${JOB_API}/get?keyword=${searchQuery}`,
+        {
+          withCredentials: true,
+        }
+      );
       console.log("Job Response => ", response.data.data);
       if (response?.data?.success) {
         dispatch(addJobs(response?.data?.data));
