@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Company } from "../models/compony.model";
+import { Company } from "../models/company.model";
 import { AuthRequest } from "../types";
 import mongoose from "mongoose";
 import { getDataUri } from "../utils/dataUri";

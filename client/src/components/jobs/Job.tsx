@@ -2,7 +2,7 @@ import { Bookmark } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { MagicCard } from "../ui/magic-card";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useNavigate } from "react-router-dom";
 
 interface JobProps {
@@ -25,10 +25,32 @@ function Job({ job }: JobProps) {
   const navigate = useNavigate();
 
   const daysAgoFunction = (mongodbTime: string) => {
-    const createdAt = new Date(mongodbTime);
-    const currentTime = new Date();
-    const timeDifference = currentTime.getTime() - createdAt.getTime();
-    return Math.floor(timeDifference / (1000 * 24 * 60 * 60));
+    try {
+      const createdAt = new Date(mongodbTime);
+
+      if (isNaN(createdAt.getTime())) {
+        console.error("Invalid date format:", mongodbTime);
+        return 0;
+      }
+
+      const currentTime = new Date();
+      const timeDifference = currentTime.getTime() - createdAt.getTime();
+      const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+      return daysDifference;
+    } catch (error) {
+      console.error("Error calculating days difference:", error);
+      return 0;
+    }
+  };
+
+  const getCompanyInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
   return (
     <div className="flex h-auto min-h-[250px] flex-col gap-2">
@@ -37,7 +59,7 @@ function Job({ job }: JobProps) {
         gradientColor="#D9D9D955"
       >
         <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-500">
             {daysAgoFunction(job?.createdAt) === 0
               ? "Today"
               : `${daysAgoFunction(job?.createdAt)} days ago`}
@@ -46,9 +68,7 @@ function Job({ job }: JobProps) {
             variant="outline"
             className="rounded-full"
             size="icon"
-            // onClick={() => setIsBookmarked(!isBookmarked)}
           >
-            {/* {isBookmarked ? <BookMarked /> : <Bookmark />} */}
             <Bookmark />
           </Button>
         </div>
@@ -61,8 +81,11 @@ function Job({ job }: JobProps) {
             <Avatar>
               <AvatarImage
                 src={job?.company?.logo}
-                alt="Company Logo"
+                alt={`${job?.company?.name} logo`}
               />
+              <AvatarFallback>
+                {getCompanyInitials(job?.company?.name)}
+              </AvatarFallback>
             </Avatar>
           </Button>
           <div>
