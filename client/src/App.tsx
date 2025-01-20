@@ -12,6 +12,7 @@ import CreateCompany from "./pages/admin/company/CreateCompany";
 import EditCompany from "./pages/admin/company/EditCompany";
 import AdminJobs from "./pages/admin/jobs/AdminJobs";
 import CreateJobs from "./pages/admin/jobs/CreateJobs";
+import Applicants from "./pages/admin/Applicants";
 
 function App() {
   return (
@@ -65,6 +66,10 @@ function App() {
         <Route
           path="/admin/jobs/create"
           element={<CreateJobs />}
+        />
+        <Route
+          path="/admin/jobs/:id/applicants"
+          element={<Applicants />}
         />
       </Routes>
     </BrowserRouter>
