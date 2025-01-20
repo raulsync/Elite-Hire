@@ -3,16 +3,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 const filterData = [
   {
     filterType: "Location",
-    array: [
-      "Bangalore",
-      "Mumbai",
-      "Kolhapur",
-      "Udaipur",
-      "Mangalore",
-      "Salem",
-      "Chittoor",
-      "Remote",
-    ],
+    array: ["Bangalore", "Delhi", "Gurgaon", "Noida", "Mumbai", "Remote"],
   },
   {
     filterType: "Industry",

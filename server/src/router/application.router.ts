@@ -14,7 +14,7 @@ applicationRouter.get("/apply/:id", userAuth, applyJob as RequestHandler);
 applicationRouter.get("/get", userAuth, getAppliedJobs as RequestHandler);
 
 applicationRouter.get(
-  "/applicants/:id",
+  "/:id/applicants",
   userAuth,
   getApplicants as RequestHandler
 );

@@ -142,7 +142,7 @@ export const updateApplicationStatus = async (
   res: Response
 ) => {
   try {
-    const { status } = req.params;
+    const { status } = req.body;
     const applicationId = req.params.id;
 
     if (!applicationId) {
@@ -170,17 +170,16 @@ export const updateApplicationStatus = async (
       });
     }
 
-    application.status = status;
+    application.status = status.toLocaleLowerCase();
     await application.save();
 
     return res.status(200).send({
       message: "Application status updated successfully",
-      data: application,
       success: true,
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in updata status", error.message);
+      console.error("Error in update status", error.message);
       return res.status(500).send({
         message: error.message,
         success: false,
