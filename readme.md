@@ -1,66 +1,76 @@
-# Elite-Hire
+# EliteHire
 
-<!-- Add your project banner or logo. Recommended size: 1280x640px -->
+EliteHire is a production-grade MERN stack job portal application designed to connect job seekers with employers, supercharged with advanced AI screening and real-time collaboration tools.
 
-Elite-Hire is a job portal platform designed to connect job seekers with top companies. It provides a user-friendly interface for job seekers to browse job opportunities, create profiles, and apply for jobs. The platform also includes features for companies to post job openings and manage applicants.
+This repository represents a robust portfolio project demonstrating production engineering practices, including structured logging, security hardening, real-time WebSocket communication, and integration with the Google Gemini API.
 
-[//]: # "Add screenshots/GIFs of the application here"
+---
 
-![alt text](<Screenshot from 2025-01-20 22-12-28.png>)
+## Key Highlights & Production-Grade Features
 
-<!-- Add 2-3 screenshots showcasing main features. Recommended size: 1280x720px -->
+### 🛡️ 1. Security Hardening & Protection
+- **NoSQL Injection Protection**: Active request sanitization using `express-mongo-sanitize` to defend database schemas.
+- **HTTP Parameter Pollution (HPP)**: Integration of `hpp` middleware to safeguard request parameters.
+- **Payload Size Limits**: Strict `10kb` request body sizing limits to prevent memory exhaustion / Denial of Service (DoS) attacks.
+- **Configurable CORS & Helmet**: Custom HTTP security headers via `helmet` and environment-configured CORS policy matching target deployment environments.
+- **Role-Based Access Control (RBAC)**: Custom middlewares protecting administrative paths for Recruiters while isolating candidate features.
+- **Leak Protection**: Clean, secure user authentication responses that strip out hashes and private keys prior to client transmission.
 
-## Features
+### 🤖 2. AI Resume Parser
+- **Google Gemini Integration**: Uses `gemini-1.5-flash` to extract structured profile information (Bio, Skills, Experience, Education) from uploaded resumes (PDF, TXT, DOCX).
+- **Graceful Local Fallback**: Seamless offline parsing fallback using specialized regex heuristic patterns if API keys are missing.
+- **One-Click Autofill**: Front-end parsing interface with a review panel allowing candidates to auto-populate their profile with parsed data.
 
-- **Job Listings**: Browse job opportunities from top companies
-- **Profile Creation**: Create and manage your professional profile
-- **Search Functionality**: Easily search for jobs based on various criteria
-- **Application Tracking**: Keep track of your job applications
-- **Employer Dashboard**: Companies can post job openings and manage applicants
+### 📊 3. Recruiter Analytics Dashboard
+- **Aggregate Dashboards**: MongoDB Aggregation pipelines calculating pipeline metrics.
+- **Hiring Funnel**: Custom funnel visualization mapping progress from applied to screened, interviewed, and hired.
+- **Application Trends**: Time-series charts tracing application counts over the last 30 days.
+- **Skill Pool Analyzer**: Distribution analysis of candidate skills to identify talent density.
+- **Recharts Integration**: Visually stunning, responsive charts styled with Outfit/Inter typography and tailored CSS gradients.
+
+### ⚡ 4. Real-Time Notification System
+- **WebSocket Infrastructure**: Event-driven architecture utilizing `Socket.IO` supporting multi-tab active user synchronizations.
+- **Recruiter Alerts**: Real-time push updates triggered on application submission.
+- **Applicant Alerts**: Instant status updates when application status changes (Pending → Interview → Accepted/Rejected).
+- **Persisted Notifications**: Database backing to review notification history with read/unread statuses.
+
+### 🧠 5. Smart Job Recommendations
+- **Skill Matching Matrix**: Dynamic matching algorithm pairing student skill profiles with job description requirements.
+- **Match Score Badges**: Displays percentage match scores and lists matching skill tags directly on job cards to guide applicants.
+
+### 📝 6. Code Quality & Structured Logging
+- **Winston Structured Logger**: Complete removal of scattered `console.log` calls in favor of a standard Winston logger. Generates formatted console output in development and automatic JSON log files in production.
+- **Centralized Client Types**: Clear TypeScript interfaces mapping application states inside `client/src/types/index.ts`.
+
+---
 
 ## Tech Stack
 
-### Frontend
+- **Frontend**: React (Vite), TypeScript, Tailwind CSS, Redux Toolkit, React Query, Recharts, Lucide React
+- **Backend**: Node.js, Express.js, TypeScript, Socket.IO, Winston, Mongoose
+- **Database**: MongoDB (Atlas)
+- **AI Integrations**: Google Gemini API via `@langchain/google-genai`
+- **File Storage**: Cloudinary
 
-- TypeScript
-- React.js
-- Tailwind CSS
-- shadcn UI
+---
 
-### Backend
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
-
-## Installation
+## Getting Started
 
 ### Prerequisites
+- Node.js (v18.x or higher)
+- MongoDB (Atlas or Local)
+- Cloudinary Account (for image/resume uploads)
+- Google Gemini API Key (Optional, falls back to regex-based parser if omitted)
 
-Before getting started, ensure you have the following installed:
+### Installation
 
-- Node.js (version 14.x or higher)
-- MongoDB (local or remote, like MongoDB Atlas)
-- Git
-
-### Steps to Get Started
-
-1. **Clone the repository:**
-
+1. **Clone the Repository**
    ```bash
    git clone https://github.com/raulsync/Elite-Hire.git
-   ```
-
-2. **Navigate to the project directory:**
-
-   ```bash
    cd Elite-Hire
    ```
 
-3. **Install dependencies for both frontend and backend:**
-
+2. **Install Dependencies**
    ```bash
    # Install backend dependencies
    cd server
@@ -71,70 +81,56 @@ Before getting started, ensure you have the following installed:
    npm install
    ```
 
-4. **Set up environment variables:**
+3. **Set Up Environment Variables**
+   
+   Configure environment settings by renaming `.env.example` templates to `.env`:
 
-   ```bash
-   # In the server directory, create a .env file
-   cd server
-   touch .env
-
-   # Add the following variables
-   PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
+   **Server Configuration (`server/.env`)**:
+   ```env
+   PORT=7777
+   NODE_ENV=development
+   MONGO_URI=your_mongodb_connection_uri
+   JWT_SECRET_KEY=your_jwt_signing_key
+   CLOUDINARY_NAME=your_cloudinary_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   CORS_ORIGIN=http://localhost:5173
+   GEMINI_API_KEY=your_gemini_api_key
    ```
 
-5. **Start the development servers:**
+   **Client Configuration (`client/.env`)**:
+   ```env
+   VITE_API_BASE_URL=http://localhost:7777/api
+   ```
 
+4. **Run Development Servers**
    ```bash
-   # Start backend server (from server directory)
+   # In server folder
    npm run dev
 
-   # Start frontend server (from client directory)
+   # In client folder
    npm run dev
    ```
 
-## Usage
+---
 
-[//]: # "Add screenshots/GIFs demonstrating usage here"
+## Directory Overview
 
-1. Create a user account
-   ![alt text](<Screenshot from 2025-01-20 22-19-12.png>)
-   ![alt text](<Screenshot from 2025-01-20 22-19-35.png>)
-2. Browse job listings
-   ![alt text](image.png)
-3. Apply for jobs
-   ![alt text](image-1.png)
-4. Create company profile
-   ![alt text](image-2.png)
-5. Post job listings
-   ![alt text](image-3.png)
-
-<!-- Add screenshots or GIFs showing how to:
-Recommended size: 1280x720px -->
-
-### For Job Seekers
-
-1. Create an account or log in
-2. Complete your profile with professional information
-3. Browse available job listings
-4. Apply for positions with your profile
-5. Track your application status
-
-### For Employers
-
-1. Create a company account
-2. Set up your company profile
-3. Post job openings
-4. Review and manage applications
-5. Communicate with potential candidates
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+```text
+├── client
+│   ├── src
+│   │   ├── components      # UI, layout, and feature components (ResumeParser, NotificationBell)
+│   │   ├── hooks           # API hooks & state trackers
+│   │   ├── lib             # Axios client wrapper
+│   │   ├── pages           # Router targets (Home, Detail, Dashboard)
+│   │   ├── store           # Redux slices (auth, jobs, companies)
+│   │   └── types           # Centralized type declarations
+└── server
+    ├── src
+    │   ├── config          # Database, Cloudinary configuration
+    │   ├── controllers     # User, Job, Company, Notification, Analytics controllers
+    │   ├── middlewares     # Security, Auth, Upload and Global error middlewares
+    │   ├── models          # Mongoose Schemas (User, Job, Application, Notification)
+    │   ├── router          # Express Route mappings
+    │   └── utils           # Winston logger, Gemini client, Socket.IO wrapper
+```
