@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { IApplication } from "../types";
 
-interface ApplicationDocument extends IApplication {}
+interface ApplicationDocument extends IApplication, mongoose.Document {}
 const applicationSchema = new mongoose.Schema<ApplicationDocument>(
   {
     job: {
@@ -16,8 +16,16 @@ const applicationSchema = new mongoose.Schema<ApplicationDocument>(
     },
     status: {
       type: String,
-      enum: ["accepted", "rejected", "pending"],
+      enum: ["accepted", "rejected", "pending", "interview"],
       default: "pending",
+    },
+    aiAssessment: {
+      score: { type: Number },
+      feedback: { type: String },
+      matchedSkills: [{ type: String }],
+      missingSkills: [{ type: String }],
+      strengths: [{ type: String }],
+      recommendations: [{ type: String }],
     },
   },
   { timestamps: true }

@@ -15,11 +15,21 @@ export interface PopulatedApplicant {
   };
 }
 
+export interface AIAssessment {
+  score: number;
+  feedback: string;
+  matchedSkills: string[];
+  missingSkills: string[];
+  strengths: string[];
+  recommendations: string[];
+}
+
 export interface PopulatedApplication {
   _id: string;
   job: string;
   applicant: PopulatedApplicant;
-  status: "accepted" | "rejected" | "pending";
+  status: "accepted" | "rejected" | "pending" | "interview";
+  aiAssessment?: AIAssessment;
   createdAt: string;
   updatedAt: string;
 }

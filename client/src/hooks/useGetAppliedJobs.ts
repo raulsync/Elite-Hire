@@ -17,7 +17,7 @@ export const useGetAppliedJob = () => {
         withCredentials: true,
       });
       if (response.data.success) {
-        dispatch(setAllAppliedJobs(response.data.data));
+        dispatch(setAllAppliedJobs(response.data.application));
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

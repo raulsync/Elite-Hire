@@ -47,6 +47,14 @@ export interface IApplication {
   job: Types.ObjectId;
   applicant: Types.ObjectId;
   status: string;
+  aiAssessment?: {
+    score: number;
+    feedback: string;
+    matchedSkills: string[];
+    missingSkills: string[];
+    strengths: string[];
+    recommendations: string[];
+  };
 }
 
 export interface AuthRequest extends Request {

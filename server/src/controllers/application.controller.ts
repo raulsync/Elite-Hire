@@ -2,12 +2,20 @@ import { Response } from "express";
 import { AuthRequest } from "../types";
 import { Application } from "../models/application.model";
 import { Job } from "../models/job.model";
+import { generateAIAssessment } from "../utils/gemini";
 
 export const applyJob = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
     const userId = user?._id;
     const jobId = req.params.id;
+
+    if (user?.role === "Recruiter") {
+      return res.status(400).send({
+        message: "Recruiters are not allowed to apply for jobs.",
+        success: false,
+      });
+    }
 
     if (!jobId || !userId) {
       return res.status(400).send({
@@ -41,7 +49,7 @@ export const applyJob = async (req: AuthRequest, res: Response) => {
       applicant: userId,
     });
 
-    job.applications.push(application._id);
+    job.applications.push(application._id as any);
     await application.save();
     await job.save();
     return res.status(200).send({
@@ -118,6 +126,30 @@ export const getApplicants = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    // Generate AI assessment if missing
+    const applications = job.applications as any[];
+    for (const app of applications) {
+      if (!app.aiAssessment || app.aiAssessment.score === undefined) {
+        try {
+          const reqs = Array.isArray(job.requirements)
+            ? (job.requirements as string[])
+            : typeof job.requirements === "string"
+            ? (job.requirements as string).split(",").map((s) => s.trim())
+            : [];
+          const assessment = await generateAIAssessment(
+            app.applicant,
+            job.title,
+            reqs,
+            job.description || ""
+          );
+          app.aiAssessment = assessment;
+          await app.save();
+        } catch (err) {
+          console.error(`Failed to generate AI assessment for application ${app._id}:`, err);
+        }
+      }
+    }
+
     res.status(200).send({
       data: job,
       success: true,
@@ -148,7 +180,7 @@ export const updateApplicationStatus = async (
       });
     }
 
-    const allowedStatus = ["accepted", "rejected", "pending"];
+    const allowedStatus = ["accepted", "rejected", "pending", "interview"];
 
     if (!allowedStatus.includes(status)) {
       return res.status(401).send({

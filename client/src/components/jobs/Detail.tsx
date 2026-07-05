@@ -128,17 +128,26 @@ function Detail() {
             </div>
           </div>
           <div>
-            <Button
-              disabled={isApplied}
-              onClick={isApplied ? () => {} : handleApplyJob}
-              className={`rounded-lg px-6 h-10 text-sm font-semibold transition-all ${
-                isApplied
-                  ? "bg-zinc-100 text-zinc-400 border border-zinc-250 cursor-not-allowed shadow-none"
-                  : "bg-primary hover:bg-primary/90 text-white shadow-sm"
-              }`}
-            >
-              {isApplied ? "Already Applied" : "Apply Now"}
-            </Button>
+            {user?.role === "Recruiter" ? (
+              <Button
+                disabled
+                className="bg-zinc-100 text-zinc-450 border border-zinc-250 cursor-not-allowed shadow-none rounded-lg px-6 h-10 text-sm font-semibold"
+              >
+                Recruiter Account
+              </Button>
+            ) : (
+              <Button
+                disabled={isApplied}
+                onClick={isApplied ? () => {} : handleApplyJob}
+                className={`rounded-lg px-6 h-10 text-sm font-semibold transition-all ${
+                  isApplied
+                    ? "bg-zinc-100 text-zinc-400 border border-zinc-250 cursor-not-allowed shadow-none"
+                    : "bg-primary hover:bg-primary/90 text-white shadow-sm"
+                }`}
+              >
+                {isApplied ? "Already Applied" : "Apply Now"}
+              </Button>
+            )}
           </div>
         </div>
 

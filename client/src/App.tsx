@@ -16,12 +16,14 @@ import Applicants from "./pages/admin/Applicants";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "./store/features/authSlice";
 import { authService } from "./services/authService";
+import { RootState } from "./store/store";
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const { data, isLoading } = useQuery({
     queryKey: ["currentUser"],
@@ -36,7 +38,9 @@ function App() {
     }
   }, [data, dispatch]);
 
-  if (isLoading) {
+  const isSessionVerifying = isLoading || (data?.success && !user);
+
+  if (isSessionVerifying) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-50">
         <div className="flex flex-col items-center gap-4">
