@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/ApiError";
+import logger from "../utils/logger";
 
 export const errorHandler = (
   err: any,
@@ -15,12 +16,10 @@ export const errorHandler = (
     message = err.message;
   }
 
-  console.error(
+  logger.error(
     `[Error Log] Path: ${req.path} | Code: ${statusCode} | Msg: ${message}`,
+    { error: err }
   );
-  if (statusCode === 500) {
-    console.error(err.stack);
-  }
 
   res.status(statusCode).json({
     success: false,

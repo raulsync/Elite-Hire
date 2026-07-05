@@ -13,6 +13,7 @@ import EditCompany from "./pages/admin/company/EditCompany";
 import AdminJobs from "./pages/admin/jobs/AdminJobs";
 import CreateJobs from "./pages/admin/jobs/CreateJobs";
 import Applicants from "./pages/admin/Applicants";
+import Dashboard from "./pages/admin/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -114,6 +115,10 @@ function App() {
           <Route
             path="/admin/jobs/:id/applicants"
             element={<Applicants />}
+          />
+          <Route
+            path="/admin/dashboard"
+            element={<Dashboard />}
           />
         </Route>
       </Routes>

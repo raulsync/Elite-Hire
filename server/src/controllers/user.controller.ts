@@ -5,6 +5,7 @@ import { User } from "../models/user.model";
 import { AuthRequest } from "../types";
 import { getDataUri } from "../utils/dataUri";
 import cloudinary from "../config/cloudinary";
+import logger from "../utils/logger";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -13,7 +14,7 @@ export const registerUser = async (req: Request, res: Response) => {
     //file
     const file = req.file;
     if (!name || !email || !password || !phoneNumber || !role) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "All fields are required",
         success: false,
       });
@@ -51,15 +52,23 @@ export const registerUser = async (req: Request, res: Response) => {
     });
     await newUser.save();
 
-    const data = newUser;
+    const data = {
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      phoneNumber: newUser.phoneNumber,
+      role: newUser.role,
+      profile: newUser.profile,
+    };
 
-    return res.json({
+    return res.status(201).json({
       data: data,
       message: "User saved successfully",
       success: true,
     });
   } catch (error) {
     if (error instanceof Error) {
+      logger.error("Error in register", error);
       return res.status(500).json({
         message: error.message,
         success: false,
@@ -132,8 +141,8 @@ export const login = async (req: Request, res: Response) => {
       });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in login", error.message);
-      return res.status(501).json({
+      logger.error("Error in login", error);
+      return res.status(500).json({
         message: error.message,
         success: false,
       });
@@ -151,8 +160,8 @@ export const logout = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in logout api", error.message);
-      return res.status(501).json({
+      logger.error("Error in logout api", error);
+      return res.status(500).json({
         message: error.message,
         success: false,
       });
@@ -164,7 +173,9 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     const { name, email, phoneNumber, bio, skills } = req.body;
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
     const resumeFile = files?.["file"]?.[0];
     const profilePhotoFile = files?.["profilePhoto"]?.[0];
 
@@ -238,8 +249,8 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in update profile api", error.message);
-      return res.status(501).json({
+      logger.error("Error in update profile api", error);
+      return res.status(500).json({
         message: error.message,
         success: false,
       });
@@ -272,11 +283,45 @@ export const getMe = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in getMe api", error.message);
+      logger.error("Error in getMe api", error);
       return res.status(500).json({
         message: error.message,
         success: false,
       });
+    }
+  }
+};
+
+export const parseResume = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "Not authenticated", success: false });
+    }
+
+    const file = req.file;
+    if (!file) {
+      return res
+        .status(400)
+        .json({ message: "Resume file is required", success: false });
+    }
+
+    const fileText = file.buffer.toString("utf-8");
+
+    const { parseResumeWithAI } = await import("../utils/resumeParser");
+    const parsed = await parseResumeWithAI(fileText);
+
+    return res.status(200).json({
+      message: "Resume parsed successfully",
+      success: true,
+      data: parsed,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error("Error in parseResume", error);
+      return res.status(500).json({ message: error.message, success: false });
     }
   }
 };

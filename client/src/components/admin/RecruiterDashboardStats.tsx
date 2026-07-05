@@ -5,7 +5,6 @@ import { useGetCompanies } from "@/hooks/useGetCompanies";
 import { useGetAdminJobs } from "@/hooks/useGetAdminJobs";
 
 function RecruiterDashboardStats() {
-  // Fetch data if not already fetched
   useGetCompanies();
   useGetAdminJobs();
 
@@ -14,7 +13,7 @@ function RecruiterDashboardStats() {
 
   const totalApplicants = adminJobs.reduce(
     (acc, job) => acc + (job.applications?.length || 0),
-    0
+    0,
   );
 
   const stats = [
@@ -60,7 +59,9 @@ function RecruiterDashboardStats() {
               <span className="text-sm font-semibold text-zinc-400">
                 {stat.title}
               </span>
-              <div className={`p-2.5 rounded-xl ${stat.bgTheme} ${stat.iconColor}`}>
+              <div
+                className={`p-2.5 rounded-xl ${stat.bgTheme} ${stat.iconColor}`}
+              >
                 <IconComponent className="h-5 w-5" />
               </div>
             </div>

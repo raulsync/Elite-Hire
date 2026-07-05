@@ -4,6 +4,7 @@ import { AuthRequest } from "../types";
 import mongoose from "mongoose";
 import { getDataUri } from "../utils/dataUri";
 import cloudinary from "../config/cloudinary";
+import logger from "../utils/logger";
 
 export const registerCompany = async (req: AuthRequest, res: Response) => {
   try {
@@ -35,7 +36,7 @@ export const registerCompany = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in creating company", error.message);
+      logger.error("Error in creating company", error);
       return res.status(500).json({
         message: error.message,
         success: false,
@@ -92,7 +93,7 @@ export const getCompanyById = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in getCompanyById");
+      logger.error("Error in getCompanyById", error);
       return res.status(500).json({
         message: error.message,
         success: false,
@@ -143,7 +144,7 @@ export const updateCompany = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in update company", error.message);
+      logger.error("Error in update company", error);
       return res.status(500).json({
         message: error.message,
         success: false,

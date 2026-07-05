@@ -2,6 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../types";
 import { Job } from "../models/job.model";
 import { buildSearchQuery } from "../utils/searchQuery";
+import logger from "../utils/logger";
 
 export const jobPost = async (req: AuthRequest, res: Response) => {
   try {
@@ -56,6 +57,7 @@ export const jobPost = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error occured in posting job", error.message);
+      logger.error("Error in posting job", error);
       res.status(500).json({
         message: error.message,
         success: false,
@@ -94,7 +96,7 @@ export const getAllJob = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in get all job", error.message);
+      logger.error("Error in get all job", error);
       return res.status(500).json({});
     }
   }
@@ -121,7 +123,7 @@ export const getJobById = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in get job by id");
+      logger.error("Error in get job by id", error);
       return res.status(500).json({
         message: error.message,
         success: false,
@@ -153,7 +155,7 @@ export const getAdminJob = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in getAdminJOb", error.message);
+      logger.error("Error in getAdminJob", error);
       return res.status(500).send({
         message: error.message,
         success: false,

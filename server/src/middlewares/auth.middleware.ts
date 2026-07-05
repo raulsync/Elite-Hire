@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
 import { AuthRequest, JwtPayload } from "../types";
+import logger from "../utils/logger";
 
 export const userAuth = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { token } = req.cookies;
@@ -21,7 +22,7 @@ export const userAuth = async (
     //validate token
     const decodedId = (await jwt.verify(
       token,
-      process.env.JWT_SECRET_KEY!
+      process.env.JWT_SECRET_KEY!,
     )) as JwtPayload;
     // const { _id } = decodedId;
     const user = await User.findById(decodedId.userId);
@@ -43,4 +44,24 @@ export const userAuth = async (
       });
     }
   }
+};
+
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      res.status(401).json({ message: "Not authenticated", success: false });
+      return;
+    }
+    if (!roles.includes(req.user.role)) {
+      logger.warn(
+        `Unauthorized access attempt by user ${req.user._id} with role ${req.user.role}`,
+      );
+      res.status(403).json({
+        message: `Role '${req.user.role}' is not authorized to access this resource`,
+        success: false,
+      });
+      return;
+    }
+    next();
+  };
 };
