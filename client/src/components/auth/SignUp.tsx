@@ -1,83 +1,41 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { RadioGroup } from "../ui/radio-group";
-import React, { useState } from "react";
-import axios from "axios";
-import { USER_API } from "@/utils/api";
-import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signUpSchema, SignUpInput } from "@/utils/validation";
+import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
-
-interface IState {
-  name: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
-  role: string;
-  file?: File | string;
-}
+import React from "react";
 
 function SignUp() {
-  const [input, setInput] = useState<IState>({
-    name: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    role: "",
-    file: "",
+  const { signUp, isSigningUp } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<SignUpInput>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      phoneNumber: "",
+      role: "Student",
+    },
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
+  const onSubmit = (data: SignUpInput) => {
+    signUp(data);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput({ ...input, file: e.target.files?.[0] });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", input.name || "");
-    formData.append("email", input.email || "");
-    formData.append("password", input.password || "");
-    formData.append("phoneNumber", input.phoneNumber || "");
-    formData.append("role", input.role);
-    if (input.file) {
-      formData.append("file", input.file);
-    }
-    setIsLoading(true);
-    try {
-      const response = await axios.post(USER_API + "/register", formData, {
-        withCredentials: true,
-      });
-      console.log(response.data);
-      if (response.data.success) {
-        navigate("/login");
-        toast({
-          description: response.data.message,
-        });
-      } else {
-        toast({
-          description: response.data.message,
-        });
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || "Something went wrong!";
-        toast({
-          description: errorMessage,
-        });
-      } else {
-        toast({
-          description: "Unexpected error occurred!",
-        });
-      }
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("file", file);
     }
   };
 
@@ -88,7 +46,7 @@ function SignUp() {
           Sign <span className="text-red-600">Up</span>
         </h1>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className=" w-[90%] my-4 space-y-6"
         >
           <div className="space-y-4">
@@ -99,11 +57,12 @@ function SignUp() {
               <Input
                 type="text"
                 placeholder="Enter your name"
-                value={input.name}
-                name="name"
-                onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                {...register("name")}
               />
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>
+              )}
             </div>
 
             <div>
@@ -112,12 +71,13 @@ function SignUp() {
               </Label>
               <Input
                 type="email"
-                value={input.email}
-                name="email"
-                onChange={handleInputChange}
                 placeholder="you@example.com"
                 className="mt-1 block w-full  border-gray-300 shadow-sm "
+                {...register("email")}
               />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             <div>
@@ -127,11 +87,12 @@ function SignUp() {
               <Input
                 type="password"
                 placeholder="••••••••"
-                name="password"
-                value={input.password}
-                onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                {...register("password")}
               />
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+              )}
             </div>
 
             <div>
@@ -140,12 +101,13 @@ function SignUp() {
               </Label>
               <Input
                 type="tel"
-                name="phoneNumber"
-                value={input.phoneNumber}
-                onChange={handleInputChange}
                 placeholder="Enter your phone number"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                {...register("phoneNumber")}
               />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-xs text-red-600">{errors.phoneNumber.message}</p>
+              )}
             </div>
 
             <div className=" flex items-center gap-4">
@@ -159,12 +121,10 @@ function SignUp() {
                 <div className="flex items-center">
                   <Input
                     type="radio"
-                    name="role"
                     value="Student"
-                    checked={input.role === "Student"}
-                    onChange={handleInputChange}
                     className="cursor-pointer"
                     id="r1"
+                    {...register("role")}
                   />
                   <Label
                     htmlFor="r1"
@@ -176,12 +136,10 @@ function SignUp() {
                 <div className="flex items-center">
                   <Input
                     type="radio"
-                    name="role"
                     className="cursor-pointer"
                     value="Recruiter"
-                    checked={input.role === "Recruiter"}
-                    onChange={handleInputChange}
                     id="r2"
+                    {...register("role")}
                   />
                   <Label
                     htmlFor="r2"
@@ -192,6 +150,9 @@ function SignUp() {
                 </div>
               </RadioGroup>
             </div>
+            {errors.role && (
+              <p className="mt-1 text-xs text-red-600">{errors.role.message}</p>
+            )}
 
             <div className="space-y-2">
               <Label className="block text-sm font-medium text-gray-700">
@@ -205,12 +166,15 @@ function SignUp() {
                   className="w-full text-sm text-gray-500 cursor-pointer "
                 />
               </div>
+              {errors.file && (
+                <p className="mt-1 text-xs text-red-600">{(errors.file.message as string)}</p>
+              )}
             </div>
           </div>
 
           <div className="space-y-4">
-            {isLoading ? (
-              <Button className="w-full my-4">
+            {isSigningUp ? (
+              <Button className="w-full my-4" disabled>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> loading...{" "}
               </Button>
             ) : (
@@ -223,7 +187,7 @@ function SignUp() {
             )}
 
             <p className="text-center text-sm text-gray-600">
-              Already have an account?
+              Already have an account?{" "}
               <Link
                 to="/login"
                 className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline transition ease-in-out duration-150"
