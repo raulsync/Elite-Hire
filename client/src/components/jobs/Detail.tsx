@@ -35,7 +35,7 @@ function Detail() {
       if (response.data.success) {
         setIsApplied(true);
         const updatedSingleJob = {
-          ...oneJob,
+          ...oneJob!,
           applications: [
             ...oneJob!.applications,
             { applicant: user?._id || "" },

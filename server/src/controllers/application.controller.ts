@@ -28,8 +28,6 @@ export const applyJob = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    //check job exist or not
-
     const job = await Job.findById(jobId);
     if (!job) {
       return res.status(400).send({
@@ -98,8 +96,6 @@ export const getAppliedJobs = async (req: AuthRequest, res: Response) => {
   }
 };
 
-//get applicants
-
 export const getApplicants = async (req: AuthRequest, res: Response) => {
   try {
     const jobId = req.params.id;
@@ -139,7 +135,7 @@ export const getApplicants = async (req: AuthRequest, res: Response) => {
 
 export const updateApplicationStatus = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { status } = req.body;

@@ -4,7 +4,7 @@ export const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum(["Student", "Recruiter"], {
-    required_error: "Role is required",
+    message: "Role is required",
   }),
 });
 
@@ -20,7 +20,7 @@ export const signUpSchema = z.object({
     .max(15, "Phone number cannot exceed 15 digits")
     .regex(/^\+?[0-9\s\-()]+$/, "Invalid phone number format"),
   role: z.enum(["Student", "Recruiter"], {
-    required_error: "Role is required",
+    message: "Role is required",
   }),
   file: z.any().optional(),
 });

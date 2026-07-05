@@ -13,7 +13,10 @@ import {
 
 const statusPopup = ["accepted", "rejected"];
 
+import { PopulatedJob, PopulatedApplication } from "@/store/features/applicationSlice";
+
 interface ApplicantsTableProps {
+  applicants: PopulatedJob | null;
   handleStatus: (status: string, id: string) => void;
 }
 
@@ -34,7 +37,7 @@ function ApplicantsTable({ applicants, handleStatus }: ApplicantsTableProps) {
         </TableHeader>
         <TableBody>
           {applicants &&
-            applicants?.applications?.map((item) => (
+            applicants.applications?.map((item: PopulatedApplication) => (
               <tr key={item._id}>
                 <TableCell>{item?.applicant?.name}</TableCell>
                 <TableCell>{item?.applicant?.email}</TableCell>

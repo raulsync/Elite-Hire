@@ -22,12 +22,20 @@ export interface Job {
   updatedAt: string;
 }
 
+export interface AppliedJob {
+  _id: string;
+  job: Job;
+  status: "accepted" | "rejected" | "pending";
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface JobState {
   jobs: Job[];
   oneJob: Job | null;
   adminJobs: Job[];
   searchJob: string;
-  allAppliedJobs: Job[];
+  allAppliedJobs: AppliedJob[];
   searchQuery: string;
 }
 
@@ -56,7 +64,7 @@ const jobSlice = createSlice({
     setSearchJob(state, action: PayloadAction<string>) {
       state.searchJob = action.payload;
     },
-    setAllAppliedJobs(state, action: PayloadAction<Job[]>) {
+    setAllAppliedJobs(state, action: PayloadAction<AppliedJob[]>) {
       state.allAppliedJobs = action.payload;
     },
     setSearchQuery(state, action: PayloadAction<string>) {

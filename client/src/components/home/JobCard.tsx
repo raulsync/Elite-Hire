@@ -2,21 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { MagicCard } from "../ui/magic-card";
 
+import { Job } from "@/store/features/jobSlice";
+
 interface JobProps {
-  job: {
-    _id: string;
-    title: string;
-    description: string;
-    createdAt: string;
-    position: string;
-    jobType: string;
-    salary: string;
-    experience?: string;
-    company: {
-      name: string;
-      logo: string;
-    };
-  };
+  job: Job;
 }
 function JobCard({ job }: JobProps) {
   const navigate = useNavigate();
