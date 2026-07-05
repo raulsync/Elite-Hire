@@ -38,4 +38,9 @@ export const authService = {
     });
     return response.data;
   },
+
+  async getCurrentUser() {
+    const response = await apiClient.get("/user/me");
+    return response.data;
+  },
 };

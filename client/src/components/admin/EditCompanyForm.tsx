@@ -101,81 +101,90 @@ function EditCompanyForm() {
   }, [singleCompany]);
 
   return (
-    <div className="max-w-4xl mx-auto my-10">
-      <form onSubmit={handleSubmit}>
-        <div className="flex items-center gap-5 p-8">
+    <div className="max-w-3xl mx-auto my-10 px-4 sm:px-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex items-center gap-4">
           <Button
             onClick={() => navigate("/admin/companies")}
             variant="outline"
-            className="flex items-center border-red-600 shadow-md gap-2 text-gray-500 font-semibold"
+            className="flex items-center border-zinc-200 shadow-none gap-2 text-zinc-600 hover:bg-zinc-50 font-semibold rounded-lg h-9"
           >
-            <ArrowLeft />
+            <ArrowLeft className="h-4 w-4" />
             <span>Back</span>
           </Button>
-          <h1 className="font-bold text-xl">
-            <span className="text-2xl text-red-600">Company </span>
-            Setting
+          <h1 className="font-extrabold text-2xl text-zinc-900">
+            Company Settings
           </h1>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label>Company Name</Label>
-            <Input
-              type="text"
-              name="name"
-              value={input.name}
-              onChange={handleEventChange}
-            />
+
+        <div className="bg-white border border-zinc-200/50 p-8 rounded-2xl shadow-sm space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-semibold text-zinc-700">Company Name</Label>
+              <Input
+                type="text"
+                name="name"
+                value={input.name}
+                onChange={handleEventChange}
+                className="border-zinc-200 shadow-none focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-semibold text-zinc-700">Description</Label>
+              <Input
+                type="text"
+                name="description"
+                value={input.description}
+                onChange={handleEventChange}
+                className="border-zinc-200 shadow-none focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-semibold text-zinc-700">Website</Label>
+              <Input
+                type="text"
+                name="website"
+                value={input.website}
+                onChange={handleEventChange}
+                className="border-zinc-200 shadow-none focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-semibold text-zinc-700">Location</Label>
+              <Input
+                type="text"
+                name="location"
+                value={input.location}
+                onChange={handleEventChange}
+                className="border-zinc-200 shadow-none focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-1.5 md:col-span-2">
+              <Label className="text-sm font-semibold text-zinc-700">Logo</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="border-zinc-200 shadow-none focus-visible:ring-primary cursor-pointer text-zinc-550 file:text-primary"
+              />
+            </div>
           </div>
-          <div>
-            <Label>Description</Label>
-            <Input
-              type="text"
-              name="description"
-              value={input.description}
-              onChange={handleEventChange}
-            />
-          </div>
-          <div>
-            <Label>Website</Label>
-            <Input
-              type="text"
-              name="website"
-              value={input.website}
-              onChange={handleEventChange}
-            />
-          </div>
-          <div>
-            <Label>Location</Label>
-            <Input
-              type="text"
-              name="location"
-              value={input.location}
-              onChange={handleEventChange}
-            />
-          </div>
-          <div>
-            <Label>Logo</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
+
+          <div className="pt-4">
+            {loading ? (
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 font-semibold flex items-center justify-center gap-2 cursor-wait" disabled>
+                <Loader2 className="h-4 w-4 animate-spin" /> Please wait
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 font-semibold shadow-sm transition-colors"
+              >
+                Update Settings
+              </Button>
+            )}
           </div>
         </div>
-        {loading ? (
-          <Button className="w-full my-4">
-            {" "}
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
-          </Button>
-        ) : (
-          <Button
-            type="submit"
-            className="w-full my-4"
-          >
-            Update
-          </Button>
-        )}
       </form>
     </div>
   );

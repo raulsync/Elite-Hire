@@ -17,36 +17,48 @@ const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   setCompanyName,
 }) => {
   return (
-    <div>
-      <div className="max-w-4xl mx-auto">
-        <div className="my-10">
-          <h1 className="font-bold text-2xl">
-            <span className="text-3xl text-red-600">Company </span>
-            Name
+    <div className="min-h-[70vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white border border-zinc-200/50 p-8 rounded-2xl shadow-sm space-y-6">
+        <div>
+          <h1 className="font-extrabold text-3xl text-zinc-900">
+            Register Company
           </h1>
-          <p className="text-gray-500 mt-2">
-            What title would you like to give your company? You’re free to
-            adjust it later if needed
+          <p className="text-zinc-500 text-sm mt-2">
+            What is the name of your organization? You can change this later at any time.
           </p>
         </div>
 
-        <Label htmlFor="companyName">Company Name</Label>
-        <Input
-          type="text"
-          className="my-2"
-          placeholder="Google, Microsoft..."
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setCompanyName(e.target.value)
-          }
-        />
-        <div className="flex items-center gap-2 my-10">
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="companyName" className="block text-sm font-semibold text-zinc-700 mb-1.5">
+              Company Name
+            </Label>
+            <Input
+              id="companyName"
+              type="text"
+              className="w-full border-zinc-200 shadow-none focus-visible:ring-primary"
+              placeholder="e.g. Acme Corp, Google..."
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCompanyName(e.target.value)
+              }
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-3 pt-2">
           <Button
             variant="outline"
+            className="rounded-lg px-4 border-zinc-200 text-zinc-650 hover:bg-zinc-50"
             onClick={() => navigate("/admin/companies")}
           >
             Cancel
           </Button>
-          <Button onClick={handleRegister}>Continue</Button>
+          <Button
+            onClick={handleRegister}
+            className="rounded-lg px-5 bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm transition-colors"
+          >
+            Continue
+          </Button>
         </div>
       </div>
     </div>

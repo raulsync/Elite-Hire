@@ -30,6 +30,7 @@ function Applicants() {
         toast({
           description: response.data.message,
         });
+        fetchApplicants();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

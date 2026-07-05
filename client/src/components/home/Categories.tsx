@@ -39,16 +39,16 @@ function Categories() {
     <div className="w-full">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="text-center space-y-4">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-red-600 bg-red-50 border border-red-100 font-medium text-sm">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-primary bg-primary/10 border border-primary/20 font-medium text-sm">
             <BriefcaseIcon className="w-4 h-4 mr-2" />
             Explore Categories
           </span>
 
-          <h2 className="text-3xl font-bold tracking-tight">
-            Browse by <span className="text-red-600">Job Categories</span>
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
+            Browse by <span className="text-primary">Job Categories</span>
           </h2>
 
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-zinc-500 max-w-xl mx-auto">
             Explore our extensive job market and find the perfect role that
             matches your expertise and career aspirations.
           </p>
@@ -62,14 +62,14 @@ function Categories() {
                 className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"
               >
                 <div className="group relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full blur opacity-0 group-hover:opacity-25 transition duration-300"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/80 rounded-full blur opacity-0 group-hover:opacity-10 transition duration-300"></div>
                   <Button
                     onClick={() => handleJob(category.name)}
                     variant="secondary"
-                    className="relative w-full rounded-full border border-red-100 bg-white hover:border-red-200 hover:bg-red-50 transition-all duration-300"
+                    className="relative w-full rounded-full border border-primary/20 bg-white text-zinc-700 hover:border-primary/30 hover:bg-primary/10 transition-all duration-300"
                   >
                     <span className="mr-2">{category.name}</span>
-                    <span className="inline-flex items-center justify-center bg-red-100 text-red-600 text-xs rounded-full px-2 py-0.5 min-w-[2rem]">
+                    <span className="inline-flex items-center justify-center bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5 min-w-[2rem]">
                       {category.count}
                     </span>
                   </Button>
@@ -77,14 +77,15 @@ function Categories() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="bg-white border border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200 -left-12" />
-          <CarouselNext className="bg-white border border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200 -right-12" />
+          <CarouselPrevious className="bg-white border border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30 -left-12" />
+          <CarouselNext className="bg-white border border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30 -right-12" />
         </Carousel>
 
         <div className="mt-16 text-center">
           <Button
+            onClick={() => handleJob("")}
             variant="outline"
-            className="rounded-full border-2 border-red-500 hover:bg-red-50 text-red-600 px-8"
+            className="rounded-full border-2 border-primary hover:bg-primary/10 text-primary px-8"
           >
             View All Categories
           </Button>

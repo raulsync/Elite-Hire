@@ -95,19 +95,19 @@ function CreateJob() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50/50 via-white to-red-50/30 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-primary/5 py-12">
       <div className="max-w-4xl mx-auto px-4 lg:px-8">
         <div className="text-center space-y-6 mb-12">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-red-600 bg-red-50 border border-red-100 font-medium text-sm">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-primary bg-primary/10 border border-primary/25 font-medium text-sm">
             <BriefcaseIcon className="w-4 h-4 mr-2" />
             Create New Position
           </span>
 
-          <h1 className="text-3xl font-bold tracking-tight">
-            Post a New <span className="text-red-600">Job Opening</span>
+          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">
+            Post a New <span className="text-primary">Job Opening</span>
           </h1>
 
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-zinc-550 max-w-2xl mx-auto">
             Fill in the details below to create a new job posting for your
             company
           </p>
@@ -115,101 +115,101 @@ function CreateJob() {
 
         <form
           onSubmit={submitHandler}
-          className="bg-white p-8 rounded-2xl shadow-lg border border-red-100 space-y-6"
+          className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-200/60 space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label className="text-gray-700">Job Title</Label>
+              <Label className="text-zinc-700 font-semibold">Job Title</Label>
               <Input
                 type="text"
                 name="title"
                 value={input.title}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 placeholder="e.g. Senior Frontend Developer"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Description</Label>
+              <Label className="text-zinc-700 font-semibold">Description</Label>
               <Input
                 type="text"
                 name="description"
                 value={input.description}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 placeholder="Brief job description"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Requirements</Label>
+              <Label className="text-zinc-700 font-semibold">Requirements</Label>
               <Input
                 type="text"
                 name="requirements"
                 value={input.requirements}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 placeholder="Key requirements"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Salary Range</Label>
+              <Label className="text-zinc-700 font-semibold">Salary Range</Label>
               <Input
                 type="text"
                 name="salary"
                 value={input.salary}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
-                placeholder="e.g. $80,000 - $100,000"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
+                placeholder="e.g. 12 LPA"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Location</Label>
+              <Label className="text-zinc-700 font-semibold">Location</Label>
               <Input
                 type="text"
                 name="location"
                 value={input.location}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
-                placeholder="e.g. New York, NY"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
+                placeholder="e.g. Bangalore, India"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Job Type</Label>
+              <Label className="text-zinc-700 font-semibold">Job Type</Label>
               <Input
                 type="text"
                 name="jobType"
                 value={input.jobType}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 placeholder="e.g. Full-time, Remote"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Experience Level</Label>
+              <Label className="text-zinc-700 font-semibold">Experience Level</Label>
               <Input
                 type="text"
                 name="experience"
                 value={input.experience}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 placeholder="e.g. 3+ years"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700">Number of Positions</Label>
+              <Label className="text-zinc-700 font-semibold">Number of Positions</Label>
               <Input
                 type="number"
                 name="position"
                 value={input.position}
                 onChange={changeEventHandler}
-                className="rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100"
+                className="rounded-lg border-zinc-200 shadow-none focus-visible:ring-primary"
                 min="1"
               />
             </div>
@@ -217,12 +217,12 @@ function CreateJob() {
 
           {companies.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-gray-700">Select Company</Label>
+              <Label className="text-zinc-700 font-semibold">Select Company</Label>
               <Select onValueChange={selectChangeHandler}>
-                <SelectTrigger className="w-full rounded-lg border-red-100 focus:border-red-200 focus:ring-red-100">
+                <SelectTrigger className="w-full rounded-lg border-zinc-200 focus:ring-primary shadow-none">
                   <SelectValue placeholder="Choose a company" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border-zinc-200">
                   <SelectGroup>
                     {companies.map((company) => (
                       <SelectItem
@@ -241,7 +241,7 @@ function CreateJob() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-red-600 hover:bg-red-700 text-white rounded-lg h-11"
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg h-11 transition-colors font-semibold shadow-sm"
           >
             {isLoading ? (
               <>
@@ -254,7 +254,7 @@ function CreateJob() {
           </Button>
 
           {companies.length === 0 && (
-            <p className="text-sm text-red-600 text-center font-medium">
+            <p className="text-sm text-rose-500 text-center font-semibold">
               Please register a company first before posting jobs
             </p>
           )}

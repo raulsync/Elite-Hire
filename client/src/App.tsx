@@ -14,13 +14,43 @@ import AdminJobs from "./pages/admin/jobs/AdminJobs";
 import CreateJobs from "./pages/admin/jobs/CreateJobs";
 import Applicants from "./pages/admin/Applicants";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { addUser } from "./store/features/authSlice";
+import { authService } from "./services/authService";
 
 function App() {
+  const dispatch = useDispatch();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => authService.getCurrentUser(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (data?.success) {
+      dispatch(addUser(data.data));
+    }
+  }, [data, dispatch]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <p className="text-slate-600 font-medium">Verifying session...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <NavBar />
       <Routes>
-        {/* Public Routes */}
         <Route
           path="/"
           element={<Home />}
@@ -38,7 +68,6 @@ function App() {
           element={<BrowseJobs />}
         />
 
-        {/* Guest-only Routes (Auth) */}
         <Route element={<ProtectedRoute guestOnly />}>
           <Route
             path="/signup"
@@ -50,7 +79,6 @@ function App() {
           />
         </Route>
 
-        {/* Logged-in User Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
             path="/profile"
@@ -58,7 +86,6 @@ function App() {
           />
         </Route>
 
-        {/* Recruiter-only Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
           <Route
             path="/admin/companies"

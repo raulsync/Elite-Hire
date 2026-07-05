@@ -6,10 +6,10 @@ function LatestJobs() {
   const jobs = useSelector((state: RootState) => state.job?.jobs || []);
   return (
     <div className="max-w-7xl mx-auto my-20">
-      <h2 className="text-4xl text-center">
+      <h2 className="text-4xl font-bold text-center text-zinc-900">
         <span>
           Latest and trending{" "}
-          <span className="text-red-600 font-semibold">Job opening</span>
+          <span className="text-primary">Job Openings</span>
         </span>
       </h2>
       <div className="grid grid-cols-3 gap-5 my-10">

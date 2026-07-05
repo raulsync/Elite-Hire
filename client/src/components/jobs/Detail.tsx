@@ -95,83 +95,91 @@ function Detail() {
   }, [fetchjob]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-bold text-xl">{oneJob?.title || "Job Title"}</h1>
-          <div className="flex gap-2 items-center mt-4">
-            <Badge
-              className="text-blue-600 font-bold"
-              variant="outline"
+    <div className="min-h-screen bg-zinc-50/30 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white border border-zinc-200/50 p-8 rounded-2xl shadow-sm">
+        <div className="flex items-center justify-between pb-6 border-b border-zinc-100">
+          <div>
+            <h1 className="font-bold text-2xl text-zinc-900">{oneJob?.title || "Job Title"}</h1>
+            <div className="flex flex-wrap gap-2 items-center mt-3">
+              <Badge
+                className="bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 shadow-none font-medium px-2.5 py-0.5"
+                variant="outline"
+              >
+                {oneJob?.position || "N/A"} Positions
+              </Badge>
+              <Badge
+                className="bg-violet-50 text-violet-700 border border-violet-100 hover:bg-violet-100/50 shadow-none font-medium px-2.5 py-0.5"
+                variant="outline"
+              >
+                {oneJob?.salary || "N/A"} LPA
+              </Badge>
+              <Badge
+                className="bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100/50 shadow-none font-medium px-2.5 py-0.5"
+                variant="outline"
+              >
+                {oneJob?.location || "Location"}
+              </Badge>
+              <Badge
+                className="bg-zinc-100 text-zinc-700 border border-zinc-200 hover:bg-zinc-200/50 shadow-none font-medium px-2.5 py-0.5"
+                variant="outline"
+              >
+                {oneJob?.jobType || "Job Type"}
+              </Badge>
+            </div>
+          </div>
+          <div>
+            <Button
+              disabled={isApplied}
+              onClick={isApplied ? () => {} : handleApplyJob}
+              className={`rounded-lg px-6 h-10 text-sm font-semibold transition-all ${
+                isApplied
+                  ? "bg-zinc-100 text-zinc-400 border border-zinc-250 cursor-not-allowed shadow-none"
+                  : "bg-primary hover:bg-primary/90 text-white shadow-sm"
+              }`}
             >
-              {oneJob?.position || "N/A"} Position
-            </Badge>
-            <Badge
-              className="text-[#FA4F09] font-bold"
-              variant="outline"
-            >
-              {oneJob?.salary || "N/A"} LPA
-            </Badge>
-            <Badge
-              className="text-[#6B3AC2] font-bold"
-              variant="outline"
-            >
-              {oneJob?.location || "Location"}
-            </Badge>
-            <Badge
-              className="text-black font-bold"
-              variant="outline"
-            >
-              {oneJob?.jobType || "Job Type"}
-            </Badge>
+              {isApplied ? "Already Applied" : "Apply Now"}
+            </Button>
           </div>
         </div>
-        <div>
-          <Button
-            disabled={isApplied}
-            onClick={isApplied ? () => {} : handleApplyJob}
-            className={`rounded-lg ${
-              isApplied
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-[#6B3AC2] hover:bg-[#552d9b]"
-            }`}
-          >
-            {isApplied ? "Already Applied" : "Apply"}
-          </Button>
+
+        <h2 className="font-bold text-lg text-zinc-900 mt-8 mb-4">
+          Job Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6 border-b border-zinc-100">
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Role:</span>
+            <span className="text-zinc-800 text-sm font-semibold">{oneJob?.title}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Location:</span>
+            <span className="text-zinc-800 text-sm font-semibold">{oneJob?.location}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Salary:</span>
+            <span className="text-zinc-800 text-sm font-semibold">{oneJob?.salary} LPA</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Experience:</span>
+            <span className="text-zinc-800 text-sm font-semibold">{oneJob?.experience || 0} Years</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Job Type:</span>
+            <span className="text-zinc-800 text-sm font-semibold">{oneJob?.jobType}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400 text-sm font-medium w-32">Total Applicants:</span>
+            <span className="inline-flex items-center justify-center bg-primary/10 text-primary border border-primary/20 text-xs font-bold rounded-full px-2.5 py-0.5">
+              {oneJob?.applications?.length || 0}
+            </span>
+          </div>
         </div>
-      </div>
-      <h1 className="border-b-2 border-b-gray-400 font-medium py-4">
-        Job Description
-      </h1>
-      <div className="my-4">
-        <h1 className="font-bold my-1 ">
-          Role:{" "}
-          <span className=" pl-4 font-normal text-gray-800">
-            Software Engineer
-          </span>
-        </h1>
-        <h1 className="font-bold my-1 ">
-          Location:{" "}
-          <span className=" pl-4 font-normal text-gray-800">Remote</span>
-        </h1>
-        <h1 className="font-bold my-1 ">
-          Salary:{" "}
-          <span className=" pl-4 font-normal text-gray-800">
-            $50,000 - $80,000
-          </span>
-        </h1>
-        <h1 className="font-bold my-1 ">
-          Experience:{" "}
-          <span className=" pl-4 font-normal text-gray-800">3 years</span>
-        </h1>
-        <h1 className="font-bold my-1 ">
-          Job Type:
-          <span className=" pl-4 font-normal text-gray-800"> Full Time</span>
-        </h1>
-        <h1 className="font-bold my-1 ">
-          Total Applicants:
-          <span className=" pl-4 font-normal text-gray-800">10</span>
-        </h1>
+
+        <h2 className="font-bold text-lg text-zinc-900 mt-8 mb-4">
+          Job Description
+        </h2>
+        <div className="text-zinc-600 text-sm leading-relaxed whitespace-pre-wrap">
+          {oneJob?.description}
+        </div>
       </div>
     </div>
   );

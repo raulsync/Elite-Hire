@@ -23,7 +23,7 @@ function Companies() {
         onChange={(e) => setInput(e.target.value)}
       />
       <Button
-        className="bg-red-600 hover:bg-red-400"
+        className="bg-primary hover:bg-primary/90 text-white rounded-lg shadow-sm font-semibold transition-colors"
         onClick={() => navigate("/admin/companies/create")}
       >
         New Company

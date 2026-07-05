@@ -3,19 +3,15 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import axios from "axios";
-import { USER_API } from "@/utils/api";
-import { useToast } from "@/hooks/use-toast";
-import { addUser } from "@/store/features/authSlice";
+import { useAuth } from "@/hooks/useAuth";
 
 function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { toast } = useToast();
-  const dispatch = useDispatch();
+  const { logout } = useAuth();
 
   const isActiveRoute = (path: string) => {
     return location.pathname === path;
@@ -32,53 +28,27 @@ function NavBar() {
       to={to}
       className={`relative py-2 transition-colors ${
         isActiveRoute(to)
-          ? "text-red-500 font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-red-500"
-          : "hover:text-red-500"
+          ? "text-primary font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-primary"
+          : "hover:text-primary text-zinc-600"
       }`}
     >
       {children}
     </Link>
   );
 
-  const handleDelete = async () => {
-    try {
-      const response = await axios.post(USER_API + "/logout", {
-        withcredentials: true,
-      });
-
-      if (response && response.data && response.data.success) {
-        dispatch(addUser(null));
-        navigate("/");
-        toast({
-          description: response.data.message,
-        });
-      } else {
-        console.error("Error logging out:", response.data);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || "Something went wrong!";
-        toast({
-          description: errorMessage,
-        });
-      } else {
-        toast({
-          description: "Unexpected error occurred!",
-        });
-      }
-    }
+  const handleDelete = () => {
+    logout();
   };
 
   return (
-    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
+    <nav className="bg-white/85 backdrop-blur-md border-b border-zinc-200/50 shadow-sm sticky top-0 z-50">
       <div className="flex items-center justify-between mx-auto h-16 max-w-7xl px-4 lg:px-8">
         <div className="flex-shrink-0">
           <h1
             onClick={() => navigate("/")}
             className="text-3xl font-extrabold cursor-pointer hover:opacity-90 transition-opacity"
           >
-            Elite<span className="font-semibold text-red-500">Hire</span>
+            Elite<span className="font-semibold text-primary">Hire</span>
           </h1>
         </div>
 
@@ -113,10 +83,10 @@ function NavBar() {
               <div className="flex items-center gap-4">
                 <Link to="/login">
                   <Button
-                    className={`rounded-full border-2 border-red-500 transition-colors ${
+                    className={`rounded-full border-2 border-primary transition-colors text-primary ${
                       isActiveRoute("/login")
-                        ? "bg-red-50 text-red-500"
-                        : "hover:bg-red-50"
+                        ? "bg-primary/10"
+                        : "hover:bg-primary/10"
                     }`}
                     variant="outline"
                   >
@@ -127,8 +97,8 @@ function NavBar() {
                   <Button
                     className={`rounded-full transition-colors ${
                       isActiveRoute("/signup")
-                        ? "bg-red-600"
-                        : "bg-red-500 hover:bg-red-600"
+                        ? "bg-primary hover:bg-primary/90"
+                        : "bg-primary hover:bg-primary/90"
                     } text-white`}
                     variant="secondary"
                   >
@@ -139,11 +109,11 @@ function NavBar() {
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Avatar className="cursor-pointer hover:opacity-90 transition-opacity ring-2 ring-offset-2 ring-red-500">
+                  <Avatar className="cursor-pointer hover:opacity-90 transition-opacity ring-2 ring-offset-2 ring-primary">
                     <AvatarImage
                       src={
                         user.profile?.profilePhoto ||
-                        "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                        `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`
                       }
                     />
                   </Avatar>
@@ -155,12 +125,12 @@ function NavBar() {
                         <AvatarImage
                           src={
                             user.profile?.profilePhoto ||
-                            "https://media.istockphoto.com/id/517998264/vector/male-user-icon.jpg?s=612x612&w=0&k=20&c=4RMhqIXcJMcFkRJPq6K8h7ozuUoZhPwKniEke6KYa_k="
+                            `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`
                           }
                         />
                       </Avatar>
                       <div>
-                        <h3 className="font-medium text-lg">{user.name}</h3>
+                        <h3 className="font-medium text-lg text-zinc-900">{user.name}</h3>
                         <p className="text-sm text-muted-foreground">
                           {user.email}
                         </p>
@@ -180,8 +150,8 @@ function NavBar() {
                             variant="ghost"
                             className={`w-full justify-start gap-2 ${
                               isActiveRoute("/profile")
-                                ? "text-red-500 bg-red-50"
-                                : "hover:text-red-500"
+                                ? "text-primary bg-primary/10"
+                                : "hover:text-primary text-zinc-700"
                             }`}
                           >
                             <User className="h-4 w-4" />
@@ -192,7 +162,7 @@ function NavBar() {
                       <Button
                         onClick={handleDelete}
                         variant="ghost"
-                        className="w-full justify-start gap-2 hover:text-red-500"
+                        className="w-full justify-start gap-2 hover:text-primary text-zinc-700"
                       >
                         <LogOut className="h-4 w-4" />
                         Logout

@@ -28,6 +28,7 @@ interface IState {
   bio: string | undefined;
   skills: string[] | string | undefined;
   file?: File | string | undefined;
+  profilePhoto?: File | string | undefined;
 }
 
 function UpdateProfile({ openModal, setOpenModal }: IProps) {
@@ -40,13 +41,11 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     bio: user?.profile?.bio,
     skills: user?.profile?.skills?.map((skill) => skill) || [],
     file: user?.profile?.resumeUrl,
+    profilePhoto: user?.profile?.profilePhoto,
   });
-  console.log("User from Redux:", user);
 
   const { toast } = useToast();
   const dispatch = useDispatch();
-
-  console.log("Input state:", input);
 
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -54,7 +53,10 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, file: e.target.files?.[0] });
-    console.log("filehandle", input.file);
+  };
+
+  const handleProfilePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput({ ...input, profilePhoto: e.target.files?.[0] });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,8 +71,11 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
       const skillsStr = Array.isArray(input.skills) ? input.skills.join(",") : input.skills;
       formData.append("skills", skillsStr);
     }
-    if (input.file) {
+    if (input.file && typeof input.file !== "string") {
       formData.append("file", input.file);
+    }
+    if (input.profilePhoto && typeof input.profilePhoto !== "string") {
+      formData.append("profilePhoto", input.profilePhoto);
     }
     setIsLoading(true);
     try {
@@ -90,7 +95,6 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
           description: response.data.message,
         });
       }
-      console.log("API Response:", response.data);
     } catch (error) {
       console.error("API Error:", error);
       if (axios.isAxiosError(error)) {
@@ -112,16 +116,16 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     <div className="max-w-6xl mx-auto my-10">
       <Dialog open={openModal}>
         <DialogContent
-          className="max-w-2xl"
+          className="max-w-2xl bg-white border border-zinc-200 shadow-xl rounded-2xl p-6"
           onInteractOutside={() => setOpenModal(false)}
         >
           <DialogHeader>
-            <DialogTitle className="flex flex-col items-center gap-3 my-3 justify-center">
-              <h2 className="text-3xl font-semibold">
-                Let's update your <span className="text-red-600">profile</span>
+            <DialogTitle className="flex flex-col items-center gap-2 my-2 justify-center text-center">
+              <h2 className="text-2xl font-bold text-zinc-900">
+                Update Profile
               </h2>
-              <p className="text-sm text-gray-500">
-                Because employers love and prefer good completed profiles
+              <p className="text-sm text-zinc-550 font-medium">
+                Keep your professional profile updated for recruiters
               </p>
             </DialogTitle>
           </DialogHeader>
@@ -130,7 +134,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="name"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Name
                 </Label>
@@ -146,7 +150,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="email"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Email
                 </Label>
@@ -162,13 +166,13 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="phoneNumber"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Phone Number
                 </Label>
                 <Input
                   id="phoneNumber"
-                  name="phoneNnumber"
+                  name="phoneNumber"
                   value={input.phoneNumber}
                   onChange={handleEventChange}
                   className="col-span-3"
@@ -177,7 +181,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="bio"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Bio
                 </Label>
@@ -192,7 +196,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="skills"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Skills
                 </Label>
@@ -206,8 +210,24 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
+                  htmlFor="profilePhoto"
+                  className="text-right text-zinc-500 font-medium text-sm"
+                >
+                  Profile Photo
+                </Label>
+                <Input
+                  id="profilePhoto"
+                  name="profilePhoto"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePhotoChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label
                   htmlFor="file"
-                  className="text-right"
+                  className="text-right text-zinc-500 font-medium text-sm"
                 >
                   Resume
                 </Label>
@@ -223,15 +243,15 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
             </div>
             <DialogFooter>
               {isLoading ? (
-                <Button className="w-full my-4">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> loading...{" "}
+                <Button className="w-full my-4 bg-primary hover:bg-primary/90 text-white rounded-lg py-2 font-semibold flex items-center justify-center gap-2 cursor-wait">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Updating...
                 </Button>
               ) : (
                 <Button
                   type="submit"
-                  className="w-full my-4"
+                  className="w-full my-4 bg-primary hover:bg-primary/90 text-white rounded-lg py-2 font-semibold shadow-sm transition-colors"
                 >
-                  Update
+                  Update Profile
                 </Button>
               )}
             </DialogFooter>

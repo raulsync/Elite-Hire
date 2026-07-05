@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +8,7 @@
 
 @layer base {
   html {
-    @apply font-sans;
+    font-family: 'Outfit', sans-serif;
   }
   :root {
     --background: 0 0% 100%;
@@ -21,31 +23,31 @@
 
     --popover-foreground: 20 14.3% 4.1%;
 
-    --primary: 24 9.8% 10%;
+    --primary: 275 100% 35.3%;
 
-    --primary-foreground: 60 9.1% 97.8%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 4.8% 95.9%;
+    --secondary: 240 4.8% 95.9%;
 
-    --secondary-foreground: 24 9.8% 10%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --muted: 60 4.8% 95.9%;
+    --muted: 240 4.8% 95.9%;
 
-    --muted-foreground: 25 5.3% 44.7%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 60 4.8% 95.9%;
+    --accent: 240 4.8% 95.9%;
 
-    --accent-foreground: 24 9.8% 10%;
+    --accent-foreground: 240 5.9% 10%;
 
     --destructive: 0 84.2% 60.2%;
 
-    --destructive-foreground: 60 9.1% 97.8%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 20 5.9% 90%;
+    --border: 240 5.9% 90%;
 
-    --input: 20 5.9% 90%;
+    --input: 240 5.9% 90%;
 
-    --ring: 20 14.3% 4.1%;
+    --ring: 275 100% 35.3%;
 
     --chart-1: 12 76% 61%;
 

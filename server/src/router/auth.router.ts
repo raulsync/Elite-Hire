@@ -4,12 +4,15 @@ import {
   logout,
   registerUser,
   updateProfile,
+  getMe,
 } from "../controllers/user.controller";
 import { userAuth } from "../middlewares/auth.middleware";
 import { AuthRequest, LoginBody, RegisterBody } from "../types";
-import { singleUpload } from "../middlewares/multer.middleware";
+import { singleUpload, multiUpload } from "../middlewares/multer.middleware";
 
 const authRouter: Router = express.Router();
+
+authRouter.get("/me", userAuth, getMe as RequestHandler);
 
 authRouter.post(
   "/register",
@@ -22,7 +25,7 @@ authRouter.post("/logout", logout as RequestHandler);
 authRouter.post(
   "/profile/update",
   userAuth,
-  singleUpload,
+  multiUpload,
   updateProfile as RequestHandler<{}, {}, {}, {}, AuthRequest>
 );
 

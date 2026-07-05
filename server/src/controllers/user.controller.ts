@@ -164,8 +164,9 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     const { name, email, phoneNumber, bio, skills } = req.body;
 
-    const file = req.file as Express.Multer.File | undefined;
-    console.log("File=>", file);
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    const resumeFile = files?.["file"]?.[0];
+    const profilePhotoFile = files?.["profilePhoto"]?.[0];
 
     const user = req.user;
     if (!user) {
@@ -175,12 +176,24 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    //file upload
+    let resumeUrl = "";
+    let resumeName = "";
+    if (resumeFile) {
+      const fileUri = getDataUri(resumeFile);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
+      if (cloudResponse?.secure_url) {
+        resumeUrl = cloudResponse.secure_url;
+        resumeName = resumeFile.originalname;
+      }
+    }
 
-    let cloudResponse;
-    if (file) {
-      const fileUri = getDataUri(file);
-      cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
+    let profilePhotoUrl = "";
+    if (profilePhotoFile) {
+      const fileUri = getDataUri(profilePhotoFile);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content!);
+      if (cloudResponse?.secure_url) {
+        profilePhotoUrl = cloudResponse.secure_url;
+      }
     }
 
     let skillsArray: string[] = [];
@@ -206,9 +219,12 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       user.profile!.skills = skillsArray;
     }
 
-    if (cloudResponse?.secure_url) {
-      user.profile!.resumeUrl = cloudResponse.secure_url;
-      user.profile!.resumeName = file?.originalname || "";
+    if (resumeUrl) {
+      user.profile!.resumeUrl = resumeUrl;
+      user.profile!.resumeName = resumeName;
+    }
+    if (profilePhotoUrl) {
+      user.profile!.profilePhoto = profilePhotoUrl;
     }
 
     const newUser = await user.save();
@@ -224,6 +240,40 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     if (error instanceof Error) {
       console.error("Error in update profile api", error.message);
       return res.status(501).json({
+        message: error.message,
+        success: false,
+      });
+    }
+  }
+};
+
+export const getMe = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({
+        message: "Not authenticated",
+        success: false,
+      });
+    }
+
+    const data = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile,
+    };
+
+    return res.status(200).json({
+      data: data,
+      success: true,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error in getMe api", error.message);
+      return res.status(500).json({
         message: error.message,
         success: false,
       });
