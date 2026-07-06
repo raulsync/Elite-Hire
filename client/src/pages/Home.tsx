@@ -1,6 +1,7 @@
 import Categories from "@/components/home/Categories";
 import Header from "@/components/home/Header";
 import LatestJobs from "@/components/home/LatestJobs";
+import RecommendedJobs from "@/components/home/RecommendedJobs";
 import { useGetJobs } from "@/hooks/useGetJobs";
 function Home() {
   useGetJobs();
@@ -20,6 +21,10 @@ function Home() {
         </div>
 
         <div className="relative">
+          <RecommendedJobs />
+        </div>
+
+        <div className="relative">
           <LatestJobs />
         </div>
         {/*
@@ -32,3 +37,4 @@ function Home() {
 }
 
 export default Home;
+

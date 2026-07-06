@@ -11,9 +11,8 @@ export function generateAIMatchReport(
   applicantName: string,
   applicantSkills: string[],
   jobTitle: string,
-  jobRequirements: string | string[]
+  jobRequirements: string | string[],
 ): AIMatchReport {
-  // Format job requirements safely
   let reqsArray: string[] = [];
   if (typeof jobRequirements === "string") {
     reqsArray = jobRequirements.split(",").map((s) => s.trim());
@@ -21,7 +20,6 @@ export function generateAIMatchReport(
     reqsArray = jobRequirements;
   }
 
-  // Hash function to make results consistent for the same applicant + job
   const combined = `${applicantName}-${jobTitle}-${(applicantSkills || []).join(",")}`;
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
@@ -29,28 +27,27 @@ export function generateAIMatchReport(
   }
   const positiveHash = Math.abs(hash);
 
-  // Parse requirements and applicant skills
   const appSkillsLower = (applicantSkills || []).map((s) => s.toLowerCase());
   const jobReqsLower = reqsArray.map((r) => r.toLowerCase());
 
-  // Find overlapping skills
   const matched = (applicantSkills || []).filter((skill) =>
     jobReqsLower.some(
       (req) =>
-        req.includes(skill.toLowerCase()) || skill.toLowerCase().includes(req)
-    )
+        req.includes(skill.toLowerCase()) || skill.toLowerCase().includes(req),
+    ),
   );
 
   const missing = reqsArray.filter(
     (req) =>
       !appSkillsLower.some(
         (skill) =>
-          req.toLowerCase().includes(skill) || skill.includes(req.toLowerCase())
-      )
+          req.toLowerCase().includes(skill) ||
+          skill.includes(req.toLowerCase()),
+      ),
   );
 
-  // Dynamic but consistent base score
-  const skillMatchRatio = reqsArray.length > 0 ? matched.length / reqsArray.length : 0.5;
+  const skillMatchRatio =
+    reqsArray.length > 0 ? matched.length / reqsArray.length : 0.5;
   let score = Math.round(58 + skillMatchRatio * 32 + (positiveHash % 9));
   if (score > 98) score = 98;
   if (score < 50) score = 50;
@@ -95,7 +92,8 @@ export function generateAIMatchReport(
   return {
     score,
     feedback,
-    matchedSkills: matched.length > 0 ? matched : ["General Software Engineering"],
+    matchedSkills:
+      matched.length > 0 ? matched : ["General Software Engineering"],
     missingSkills: missing.length > 0 ? missing : ["Advanced System Design"],
     strengths,
     recommendations,

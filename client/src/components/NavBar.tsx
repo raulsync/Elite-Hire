@@ -6,6 +6,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAuth } from "@/hooks/useAuth";
+import NotificationBell from "./NotificationBell";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -57,6 +58,9 @@ function NavBar() {
             {user && user?.role === "Recruiter" ? (
               <>
                 <li>
+                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                </li>
+                <li>
                   <NavLink to="/admin/companies">Companies</NavLink>
                 </li>
                 <li>
@@ -107,6 +111,8 @@ function NavBar() {
                 </Link>
               </div>
             ) : (
+              <div className="flex items-center gap-3">
+                <NotificationBell />
               <Popover>
                 <PopoverTrigger asChild>
                   <Avatar className="cursor-pointer hover:opacity-90 transition-opacity ring-2 ring-offset-2 ring-primary">
@@ -171,6 +177,7 @@ function NavBar() {
                   </div>
                 </PopoverContent>
               </Popover>
+              </div>
             )}
           </div>
         </div>

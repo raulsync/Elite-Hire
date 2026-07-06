@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { APPLICATION_API, JOB_API } from "@/utils/api";
 import { useParams } from "react-router-dom";
 import { addOneJob } from "@/store/features/jobSlice";
+import { Sparkles, Loader2 } from "lucide-react";
 
 interface Application {
   applicant: string;
@@ -18,9 +19,12 @@ function Detail() {
   const { user } = useSelector((state: RootState) => state.auth);
   const isIntiallyApplied =
     oneJob?.applications?.some(
-      (application) => application.applicant === user?._id
+      (application: any) => (application.applicant?._id || application.applicant) === user?._id
     ) || false;
   const [isApplied, setIsApplied] = useState(isIntiallyApplied);
+  const matchingApplication = oneJob?.applications?.find(
+    (app: any) => (app.applicant?._id || app.applicant) === user?._id
+  );
   const params = useParams();
   const jobId = params.id;
   const dispatch = useDispatch();
@@ -189,6 +193,97 @@ function Detail() {
         <div className="text-zinc-600 text-sm leading-relaxed whitespace-pre-wrap">
           {oneJob?.description}
         </div>
+
+        {matchingApplication && (
+          <div className="mt-8 pt-8 border-t border-zinc-100">
+            <h2 className="font-bold text-lg text-zinc-900 mb-4 flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              AI Application Feedback
+            </h2>
+            {matchingApplication.aiAssessment ? (
+              <div className="bg-gradient-to-br from-primary/5 via-violet-500/5 to-white border border-primary/20 rounded-2xl p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                  <div>
+                    <h3 className="font-semibold text-zinc-800 text-base">Gemini Match Report</h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">Automated screening analysis based on your profile & skills</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-zinc-500 font-medium">Match Score:</span>
+                    <span className={`inline-flex items-center justify-center font-bold text-lg rounded-full px-3.5 py-1 text-white ${
+                      matchingApplication.aiAssessment.score >= 80 ? "bg-emerald-500" :
+                      matchingApplication.aiAssessment.score >= 50 ? "bg-amber-500" : "bg-red-500"
+                    }`}>
+                      {matchingApplication.aiAssessment.score}%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Feedback</h4>
+                    <p className="text-sm text-zinc-750 leading-relaxed bg-white border border-zinc-150/60 rounded-xl p-3.5">{matchingApplication.aiAssessment.feedback}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Key Strengths</h4>
+                      <ul className="space-y-1.5">
+                        {matchingApplication.aiAssessment.strengths?.map((str: string, idx: number) => (
+                          <li key={idx} className="text-xs text-zinc-750 flex items-start gap-2">
+                            <span className="text-emerald-500 font-bold">✓</span>
+                            <span>{str}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Recommendations</h4>
+                      <ul className="space-y-1.5">
+                        {matchingApplication.aiAssessment.recommendations?.map((rec: string, idx: number) => (
+                          <li key={idx} className="text-xs text-zinc-750 flex items-start gap-2">
+                            <span className="text-primary font-bold">→</span>
+                            <span>{rec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div>
+                      <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Matched Skills</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {matchingApplication.aiAssessment.matchedSkills?.map((skill: string) => (
+                          <span key={skill} className="px-2 py-0.5 text-xs bg-emerald-50 border border-emerald-200/60 text-emerald-700 rounded-md font-medium">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Missing/Recommended Skills</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {matchingApplication.aiAssessment.missingSkills?.map((skill: string) => (
+                          <span key={skill} className="px-2 py-0.5 text-xs bg-amber-50 border border-amber-200/60 text-amber-700 rounded-md font-medium">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-zinc-50 border border-zinc-200/60 rounded-xl p-5 text-center">
+                <Loader2 className="h-6 w-6 text-zinc-400 animate-spin mx-auto mb-2" />
+                <p className="text-sm text-zinc-650 font-medium">AI assessment is being generated</p>
+                <p className="text-xs text-zinc-400 mt-1">This usually takes a few seconds after applying</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

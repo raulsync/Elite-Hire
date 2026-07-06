@@ -17,7 +17,7 @@ export interface Job {
     logo: string;
   };
   created_by: string;
-  applications: { applicant: string }[];
+  applications: any[];
   createdAt: string;
   updatedAt: string;
 }

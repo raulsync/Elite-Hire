@@ -308,7 +308,11 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
         .json({ message: "Resume file is required", success: false });
     }
 
-    const fileText = file.buffer.toString("utf-8");
+    const { PDFParse } = await import("pdf-parse");
+    const pdfParser = new PDFParse({ data: file.buffer });
+    const pdfResult = await pdfParser.getText();
+    const fileText = pdfResult.text;
+    await pdfParser.destroy();
 
     const { parseResumeWithAI } = await import("../utils/resumeParser");
     const parsed = await parseResumeWithAI(fileText);

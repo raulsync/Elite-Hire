@@ -15,29 +15,33 @@ export function generateLocalFallbackAssessment(
   applicantBio: string,
   applicantSkills: string[],
   jobTitle: string,
-  jobRequirements: string[]
+  jobRequirements: string[],
 ): AIAssessmentReport {
   const reqsArray = jobRequirements.map((s) => s.trim().toLowerCase());
-  const skillsArray = (applicantSkills || []).map((s) => s.trim().toLowerCase());
+  const skillsArray = (applicantSkills || []).map((s) =>
+    s.trim().toLowerCase(),
+  );
 
   // Find matches
   const matched = (applicantSkills || []).filter((skill) =>
     reqsArray.some(
       (req) =>
-        req.includes(skill.toLowerCase()) || skill.toLowerCase().includes(req)
-    )
+        req.includes(skill.toLowerCase()) || skill.toLowerCase().includes(req),
+    ),
   );
 
   const missing = jobRequirements.filter(
     (req) =>
       !skillsArray.some(
         (skill) =>
-          req.toLowerCase().includes(skill) || skill.includes(req.toLowerCase())
-      )
+          req.toLowerCase().includes(skill) ||
+          skill.includes(req.toLowerCase()),
+      ),
   );
 
   // Score computation
-  const matchRatio = jobRequirements.length > 0 ? matched.length / jobRequirements.length : 0.5;
+  const matchRatio =
+    jobRequirements.length > 0 ? matched.length / jobRequirements.length : 0.5;
   let score = Math.round(60 + matchRatio * 30 + (applicantName.length % 9));
   if (score > 98) score = 98;
   if (score < 45) score = 45;
@@ -93,7 +97,7 @@ export const generateAIAssessment = async (
   applicant: { name: string; profile?: { bio?: string; skills: string[] } },
   jobTitle: string,
   jobRequirements: string[],
-  jobDescription: string = ""
+  jobDescription: string = "",
 ): Promise<AIAssessmentReport> => {
   const apiKey = process.env.GEMINI_API_KEY;
   const applicantName = applicant.name || "Candidate";
@@ -101,19 +105,21 @@ export const generateAIAssessment = async (
   const applicantSkills = applicant.profile?.skills || [];
 
   if (!apiKey) {
-    console.log("GEMINI_API_KEY not configured. Using local fallback assessment.");
+    console.log(
+      "GEMINI_API_KEY not configured. Using local fallback assessment.",
+    );
     return generateLocalFallbackAssessment(
       applicantName,
       applicantBio,
       applicantSkills,
       jobTitle,
-      jobRequirements
+      jobRequirements,
     );
   }
 
   try {
     const model = new ChatGoogleGenerativeAI({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       apiKey: apiKey,
       temperature: 0.2,
     });
@@ -142,19 +148,31 @@ Respond ONLY with a JSON object. Do not include any markdown formatting (like \`
 `;
 
     const response = await model.invoke(prompt);
-    const text = typeof response.content === "string" ? response.content : JSON.stringify(response.content);
-    
+    const text =
+      typeof response.content === "string"
+        ? response.content
+        : JSON.stringify(response.content);
+
     // Clean code block ticks if any
-    const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const cleanText = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
     const result = JSON.parse(cleanText) as AIAssessmentReport;
-    
+
     return {
       score: typeof result.score === "number" ? result.score : 70,
       feedback: result.feedback || "AI assessment completed.",
-      matchedSkills: Array.isArray(result.matchedSkills) ? result.matchedSkills : [],
-      missingSkills: Array.isArray(result.missingSkills) ? result.missingSkills : [],
+      matchedSkills: Array.isArray(result.matchedSkills)
+        ? result.matchedSkills
+        : [],
+      missingSkills: Array.isArray(result.missingSkills)
+        ? result.missingSkills
+        : [],
       strengths: Array.isArray(result.strengths) ? result.strengths : [],
-      recommendations: Array.isArray(result.recommendations) ? result.recommendations : [],
+      recommendations: Array.isArray(result.recommendations)
+        ? result.recommendations
+        : [],
     };
   } catch (error) {
     console.error("Error invoking Gemini via LangChain:", error);
@@ -163,7 +181,7 @@ Respond ONLY with a JSON object. Do not include any markdown formatting (like \`
       applicantBio,
       applicantSkills,
       jobTitle,
-      jobRequirements
+      jobRequirements,
     );
   }
 };

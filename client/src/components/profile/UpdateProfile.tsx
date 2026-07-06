@@ -15,7 +15,9 @@ import { USER_API } from "@/utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { addUser } from "@/store/features/authSlice";
-import { Loader2 } from "lucide-react";
+import { Loader2, FileText, Check } from "lucide-react";
+import ResumeParser from "./ResumeParser";
+import type { ParsedResume } from "@/types";
 
 interface IProps {
   openModal: boolean;
@@ -34,6 +36,7 @@ interface IState {
 function UpdateProfile({ openModal, setOpenModal }: IProps) {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [initialResumeUrl] = useState(user?.profile?.resumeUrl);
   const [input, setInput] = useState<IState>({
     name: user?.name,
     email: user?.email,
@@ -47,13 +50,30 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
   const { toast } = useToast();
   const dispatch = useDispatch();
 
+  const handleFileSelected = (file: File) => {
+    setInput((prev) => ({ ...prev, file }));
+  };
+
+  const handleResumeParsed = (data: ParsedResume) => {
+    setInput((prev) => ({
+      ...prev,
+      bio: data.bio || prev.bio,
+      skills: data.skills.length > 0 ? data.skills : prev.skills,
+    }));
+    toast({ description: "Bio and Skills auto-filled from resume!" });
+  };
+
+  const handleResetResume = () => {
+    setInput((prev) => ({ ...prev, file: initialResumeUrl }));
+  };
+
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput({ ...input, file: e.target.files?.[0] });
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setInput({ ...input, file: e.target.files?.[0] });
+  // };
 
   const handleProfilePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, profilePhoto: e.target.files?.[0] });
@@ -68,7 +88,9 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
     formData.append("phoneNumber", input.phoneNumber || "");
     formData.append("bio", input.bio || "");
     if (input.skills) {
-      const skillsStr = Array.isArray(input.skills) ? input.skills.join(",") : input.skills;
+      const skillsStr = Array.isArray(input.skills)
+        ? input.skills.join(",")
+        : input.skills;
       formData.append("skills", skillsStr);
     }
     if (input.file && typeof input.file !== "string") {
@@ -85,7 +107,7 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
         {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
-        }
+        },
       );
 
       if (response.data) {
@@ -114,7 +136,10 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
   };
   return (
     <div className="max-w-6xl mx-auto my-10">
-      <Dialog open={openModal}>
+      <Dialog
+        open={openModal}
+        onOpenChange={setOpenModal}
+      >
         <DialogContent
           className="max-w-2xl bg-white border border-zinc-200 shadow-xl rounded-2xl p-6"
           onInteractOutside={() => setOpenModal(false)}
@@ -131,6 +156,19 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
+              {/* AI Resume Parser */}
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right text-zinc-500 font-medium text-sm pt-2">
+                  Upload Resume
+                </Label>
+                <div className="col-span-3">
+                  <ResumeParser
+                    onFileSelected={handleFileSelected}
+                    onParsed={handleResumeParsed}
+                    onReset={handleResetResume}
+                  />
+                </div>
+              </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="name"
@@ -225,20 +263,31 @@ function UpdateProfile({ openModal, setOpenModal }: IProps) {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label
-                  htmlFor="file"
-                  className="text-right text-zinc-500 font-medium text-sm"
-                >
-                  Resume
+                <Label className="text-right text-zinc-500 font-medium text-sm">
+                  Active Resume
                 </Label>
-                <Input
-                  id="file"
-                  name="file"
-                  type="file"
-                  accept="application/pdf"
-                  onChange={handleFileChange}
-                  className="col-span-3"
-                />
+                <div className="col-span-3 text-sm font-medium">
+                  {input.file ? (
+                    typeof input.file === "string" ? (
+                      <a
+                        href={input.file}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary hover:underline flex items-center gap-1.5"
+                      >
+                        <FileText className="h-4 w-4 text-primary" />
+                        {user?.profile?.resumeName || "View Current Resume"}
+                      </a>
+                    ) : (
+                      <span className="text-zinc-800 flex items-center gap-1.5">
+                        <Check className="h-4 w-4 text-green-600 font-bold" />
+                        {input.file.name} (Ready to upload)
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-zinc-400">No resume uploaded</span>
+                  )}
+                </div>
               </div>
             </div>
             <DialogFooter>
