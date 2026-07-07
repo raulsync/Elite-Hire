@@ -8,58 +8,13 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { apiClient } from "@/lib/api-client";
-import { io, Socket } from "socket.io-client";
-import type { Notification } from "@/types";
+import { useNotifications } from "@/hooks/useNotifications";
 
 function NotificationBell() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { notifications, unreadCount, markAllAsRead } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
-  const socketRef = useRef<Socket | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchNotifications = async () => {
-      try {
-        const res = await apiClient.get("/notifications");
-        if (res.data.success) {
-          setNotifications(res.data.data);
-          setUnreadCount(res.data.unreadCount);
-        }
-      } catch {
-        console.error("notification error");
-      }
-    };
-
-    fetchNotifications();
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const socket = io(
-      import.meta.env.VITE_API_BASE_URL?.replace("/api", "") ||
-        "http://localhost:7777",
-      {
-        query: { userId: user._id },
-        withCredentials: true,
-      },
-    );
-    socketRef.current = socket;
-
-    socket.on("notification:new", (notification: Notification) => {
-      setNotifications((prev) => [notification, ...prev]);
-      setUnreadCount((prev) => prev + 1);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -73,16 +28,6 @@ function NotificationBell() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const markAllAsRead = async () => {
-    try {
-      await apiClient.patch("/notifications/all/read");
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      setUnreadCount(0);
-    } catch {
-      console.error("mark notification error");
-    }
-  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {

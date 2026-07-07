@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { apiClient } from "@/lib/api-client";
+import { useParseResume } from "@/hooks/useParseResume";
 import { Upload, FileText, Sparkles, Loader2, CheckCircle, X } from "lucide-react";
 import { Button } from "../ui/button";
 import type { ParsedResume } from "@/types";
@@ -12,51 +12,18 @@ interface ResumeParserProps {
 
 function ResumeParser({ onFileSelected, onParsed, onReset }: ResumeParserProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [parsedData, setParsedData] = useState<ParsedResume | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    isLoading,
+    parsedData,
+    error,
+    fileName,
+    parseResume,
+    resetParser,
+  } = useParseResume();
 
-  const handleFile = async (file: File) => {
-    if (!file) return;
-
-    const validTypes = [
-      "application/pdf",
-      "text/plain",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!validTypes.includes(file.type) && !file.name.endsWith(".txt")) {
-      setError("Please upload a PDF, DOC, DOCX, or TXT file");
-      return;
-    }
-
-    setFileName(file.name);
-    setError(null);
-    setIsLoading(true);
-    setParsedData(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await apiClient.post("/user/parse-resume", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (res.data.success) {
-        setParsedData(res.data.data);
-        onFileSelected(file);
-      } else {
-        setError(res.data.message || "Failed to parse resume");
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to parse resume");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleFile = (file: File) => {
+    parseResume(file, onFileSelected);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -81,15 +48,12 @@ function ResumeParser({ onFileSelected, onParsed, onReset }: ResumeParserProps) 
   const handleApply = () => {
     if (parsedData) {
       onParsed(parsedData);
-      setParsedData(null);
-      setFileName(null);
+      resetParser();
     }
   };
 
   const reset = () => {
-    setParsedData(null);
-    setFileName(null);
-    setError(null);
+    resetParser();
     if (fileInputRef.current) fileInputRef.current.value = "";
     onReset();
   };
